@@ -61,12 +61,7 @@ const Index = () => {
       const newResult: GeneratedContent = {
         id: Date.now().toString(),
         type: contentType,
-        url: contentType === 'video' 
-          ? '/mock-video.mp4'
-          : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop',
-        thumbnail: contentType === 'video' 
-          ? 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop'
-          : undefined,
+        url: 'generated', // Será mapeado para uma imagem real no componente
         prompt: prompt,
         model: modelName,
         createdAt: new Date().toLocaleString('pt-BR'),
