@@ -47,16 +47,32 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+        
+        // AI Content Creator specific colors
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          elevated: "hsl(var(--surface-elevated))",
+          muted: "hsl(var(--surface-muted))",
         },
+        text: {
+          primary: "hsl(var(--text-primary))",
+          secondary: "hsl(var(--text-secondary))",
+          muted: "hsl(var(--text-muted))",
+        },
+        ai: {
+          primary: "hsl(var(--ai-primary))",
+          secondary: "hsl(var(--ai-secondary))",
+          accent: "hsl(var(--ai-accent))",
+          light: "hsl(var(--ai-primary-light))",
+        },
+        interactive: {
+          primary: "hsl(var(--interactive-primary))",
+          hover: "hsl(var(--interactive-hover))",
+          pressed: "hsl(var(--interactive-pressed))",
+        },
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        error: "hsl(var(--error))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -84,6 +100,20 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float": "float 6s ease-in-out infinite",
+        "glow": "glow 2s ease-in-out infinite alternate",
+        "bounce-soft": "bounce-soft 1s ease-in-out infinite",
+      },
+      backgroundImage: {
+        'gradient-ai': 'var(--gradient-ai)',
+        'gradient-hero': 'var(--gradient-hero)',
+        'gradient-surface': 'var(--gradient-surface)',
+      },
+      boxShadow: {
+        'ai-sm': 'var(--shadow-sm)',
+        'ai-md': 'var(--shadow-md)',
+        'ai-lg': 'var(--shadow-lg)',
+        'ai-glow': 'var(--shadow-ai-glow)',
       },
     },
   },
