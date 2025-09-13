@@ -4,12 +4,27 @@ import { ProductSelector } from '@/components/ProductSelector';
 import { ModelSelector } from '@/components/ModelSelector';
 import { PromptEditor } from '@/components/PromptEditor';
 import { GenerationResults } from '@/components/GenerationResults';
+import { useToast } from '@/components/ui/use-toast';
+
+interface GeneratedContent {
+  id: string;
+  type: 'video' | 'image';
+  url: string;
+  thumbnail?: string;
+  prompt: string;
+  model: string;
+  createdAt: string;
+  duration?: string;
+  resolution: string;
+}
 
 const Index = () => {
+  const { toast } = useToast();
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedResults, setGeneratedResults] = useState<GeneratedContent[]>([]);
 
   const handleProductSelect = (productId: string) => {
     setSelectedProducts(prev => 
@@ -23,10 +38,66 @@ const Index = () => {
     setSelectedModel(modelId);
   };
 
+  const handleGenerate = async () => {
+    if (!selectedModel || selectedProducts.length === 0 || !prompt.trim()) {
+      toast({
+        title: "Configuração incompleta",
+        description: "Selecione produtos, modelo de IA e escreva um prompt para gerar conteúdo.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    
+    try {
+      // Simular geração de conteúdo (aqui você integraria com APIs reais)
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      const contentType = selectedModel === 'veo3' ? 'video' : 'image';
+      const modelName = selectedModel === 'veo3' ? 'VEO3' : 
+                       selectedModel === 'nanobanana' ? 'NanoBanana' : 'Creative AI';
+      
+      const newResult: GeneratedContent = {
+        id: Date.now().toString(),
+        type: contentType,
+        url: contentType === 'video' 
+          ? '/mock-video.mp4'
+          : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop',
+        thumbnail: contentType === 'video' 
+          ? 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop'
+          : undefined,
+        prompt: prompt,
+        model: modelName,
+        createdAt: new Date().toLocaleString('pt-BR'),
+        duration: contentType === 'video' ? '0:15' : undefined,
+        resolution: contentType === 'video' ? '1920x1080' : '1024x768'
+      };
+
+      setGeneratedResults(prev => [newResult, ...prev]);
+      
+      toast({
+        title: "Conteúdo gerado com sucesso!",
+        description: `${contentType === 'video' ? 'Vídeo' : 'Imagem'} criado usando ${modelName}`,
+      });
+      
+    } catch (error) {
+      toast({
+        title: "Erro na geração",
+        description: "Houve um problema ao gerar o conteúdo. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const getContentType = (): 'video' | 'image' => {
     if (selectedModel === 'veo3') return 'video';
     return 'image';
   };
+
+  const canGenerate = selectedProducts.length > 0 && selectedModel && prompt.trim().length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -119,6 +190,9 @@ const Index = () => {
                 prompt={prompt}
                 onPromptChange={setPrompt}
                 contentType={getContentType()}
+                onGenerate={handleGenerate}
+                isGenerating={isGenerating}
+                canGenerate={canGenerate}
               />
             </div>
           </div>
@@ -126,7 +200,10 @@ const Index = () => {
           {/* Right Column - Results */}
           <div className="space-y-6">
             <div className="sticky top-24">
-              <GenerationResults isGenerating={isGenerating} />
+              <GenerationResults 
+                isGenerating={isGenerating} 
+                results={generatedResults} 
+              />
             </div>
           </div>
         </div>

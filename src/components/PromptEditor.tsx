@@ -17,21 +17,22 @@ interface PromptEditorProps {
   prompt: string;
   onPromptChange: (prompt: string) => void;
   contentType: 'video' | 'image';
+  onGenerate: () => void;
+  isGenerating: boolean;
+  canGenerate: boolean;
 }
 
-export const PromptEditor = ({ prompt, onPromptChange, contentType }: PromptEditorProps) => {
-  const [isGenerating, setIsGenerating] = useState(false);
+export const PromptEditor = ({ 
+  prompt, 
+  onPromptChange, 
+  contentType, 
+  onGenerate, 
+  isGenerating, 
+  canGenerate 
+}: PromptEditorProps) => {
 
   const handleSuggestionClick = (suggestion: string) => {
     onPromptChange(suggestion);
-  };
-
-  const handleGenerate = () => {
-    setIsGenerating(true);
-    // Simular geração
-    setTimeout(() => {
-      setIsGenerating(false);
-    }, 3000);
   };
 
   const clearPrompt = () => {
@@ -100,8 +101,8 @@ export const PromptEditor = ({ prompt, onPromptChange, contentType }: PromptEdit
 
         <div className="pt-4 border-t border-border">
           <Button
-            onClick={handleGenerate}
-            disabled={!prompt.trim() || isGenerating}
+            onClick={onGenerate}
+            disabled={!canGenerate || isGenerating}
             className="ai-button-primary w-full relative z-10"
           >
             {isGenerating ? (

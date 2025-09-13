@@ -42,9 +42,10 @@ const mockResults: GeneratedContent[] = [
 
 interface GenerationResultsProps {
   isGenerating?: boolean;
+  results: GeneratedContent[];
 }
 
-export const GenerationResults = ({ isGenerating = false }: GenerationResultsProps) => {
+export const GenerationResults = ({ isGenerating = false, results = [] }: GenerationResultsProps) => {
   const [favorites, setFavorites] = useState<string[]>([]);
 
   const toggleFavorite = (id: string) => {
@@ -84,7 +85,7 @@ export const GenerationResults = ({ isGenerating = false }: GenerationResultsPro
         </h3>
 
         <div className="grid gap-4">
-          {mockResults.map((result) => (
+          {results.map((result) => (
             <div
               key={result.id}
               className="ai-card border border-border p-4 hover:shadow-ai-md transition-all duration-300"
@@ -180,7 +181,7 @@ export const GenerationResults = ({ isGenerating = false }: GenerationResultsPro
           ))}
         </div>
 
-        {mockResults.length === 0 && (
+        {results.length === 0 && !isGenerating && (
           <div className="text-center py-8 text-text-muted">
             <p>Nenhum conteúdo gerado ainda.</p>
             <p className="text-sm">Selecione produtos e configure seu prompt para começar.</p>
