@@ -23,10 +23,9 @@ interface GenerationResponse {
 
 // Service para integração com Google Gemini APIs
 export class AIServices {
-  private static readonly GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; // Em produção, isso viria de variáveis de ambiente
-  private static readonly VEO3_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/veo3:generateVideo';
-  private static readonly IMAGEN_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/imagen3:generateImage';
-
+  // NOTA: Em produção, as chaves de API devem ficar no backend por segurança
+  // As APIs do Google não podem ser chamadas diretamente do frontend devido a CORS
+  
   static async generateContent(request: GenerationRequest): Promise<GenerationResponse> {
     const { prompt, model, selectedProducts } = request;
     
@@ -34,6 +33,9 @@ export class AIServices {
     const enhancedPrompt = this.enhancePromptWithProducts(prompt, selectedProducts);
     
     try {
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       if (model === 'veo3') {
         return await this.generateVideo(enhancedPrompt);
       } else if (model === 'nanobanana') {
@@ -66,101 +68,66 @@ export class AIServices {
   }
 
   private static async generateVideo(prompt: string): Promise<GenerationResponse> {
-    // Simulação da chamada para VEO3 API
-    // Em produção, você faria a chamada real para a API do Google
-    const response = await fetch(this.VEO3_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.GEMINI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt: prompt,
-        model: 'veo3',
-        config: {
-          duration: 15, // 15 segundos
-          resolution: '1920x1080',
-          fps: 30
-        }
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Erro na API VEO3: ${response.statusText}`);
-    }
-
-    // Por enquanto, simulamos o retorno com um vídeo de exemplo
-    // Em produção, você processaria a resposta real da API
+    // SIMULAÇÃO: Em produção, isso seria uma chamada real para VEO3 API através do backend
+    console.log('Gerando vídeo com prompt:', prompt);
+    
+    // Simular processamento
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Retornar URL de vídeo de exemplo
+    const videoUrls = [
+      'https://www.w3schools.com/html/mov_bbb.mp4',
+      'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+    ];
+    
+    const randomVideo = videoUrls[Math.floor(Math.random() * videoUrls.length)];
+    
     return {
       success: true,
       data: {
-        url: this.generateMockVideoUrl(),
+        url: randomVideo,
         type: 'video',
-        thumbnail: this.generateMockThumbnailUrl()
+        thumbnail: `https://picsum.photos/400/300?random=${Date.now()}`
       }
     };
   }
 
   private static async generateImage(prompt: string): Promise<GenerationResponse> {
-    // Simulação da chamada para Imagen API
-    // Em produção, você faria a chamada real para a API do Google
-    const response = await fetch(this.IMAGEN_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.GEMINI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt: prompt,
-        model: 'imagen3',
-        config: {
-          resolution: '1024x768',
-          style: 'photographic'
-        }
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Erro na API Imagen: ${response.statusText}`);
-    }
-
-    // Por enquanto, simulamos o retorno com uma imagem de exemplo
-    // Em produção, você processaria a resposta real da API
+    // SIMULAÇÃO: Em produção, isso seria uma chamada real para Imagen API através do backend
+    console.log('Gerando imagem com prompt:', prompt);
+    
+    // Simular processamento
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Gerar URL de imagem única baseada no prompt
+    const seed = prompt.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const imageUrl = `https://picsum.photos/1024/768?random=${seed}`;
+    
     return {
       success: true,
       data: {
-        url: this.generateMockImageUrl(),
+        url: imageUrl,
         type: 'image'
       }
     };
   }
 
-  private static generateMockVideoUrl(): string {
-    // Em produção, isso retornaria a URL real do vídeo gerado
-    const mockVideos = [
-      'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-      'https://www.w3schools.com/html/mov_bbb.mp4'
-    ];
-    return mockVideos[Math.floor(Math.random() * mockVideos.length)];
-  }
-
-  private static generateMockThumbnailUrl(): string {
-    // Em produção, isso seria gerado automaticamente ou fornecido pela API
-    return `https://picsum.photos/400/300?random=${Date.now()}`;
-  }
-
-  private static generateMockImageUrl(): string {
-    // Em produção, isso retornaria a URL real da imagem gerada
-    return `https://picsum.photos/1024/768?random=${Date.now()}`;
-  }
-
   static downloadContent(url: string, filename: string): void {
+    // Criar um link temporário para download
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
     link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    
+    // Para URLs externas, abrir em nova aba
+    if (url.startsWith('http')) {
+      link.setAttribute('rel', 'noopener noreferrer');
+      window.open(url, '_blank');
+    } else {
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   }
 }
