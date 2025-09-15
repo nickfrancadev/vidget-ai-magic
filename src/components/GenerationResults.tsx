@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { AIServices } from '@/services/aiServices';
 import generatedResult1 from '@/assets/generated-result-1.jpg';
 import generatedResult2 from '@/assets/generated-result-2.jpg';
 import generatedResult3 from '@/assets/generated-result-3.jpg';
@@ -39,8 +40,25 @@ export const GenerationResults = ({ isGenerating = false, results = [] }: Genera
     );
   };
 
-  const getImageForResult = (index: number) => {
+  const getImageForResult = (result: GeneratedContent, index: number) => {
+    // Se o resultado tem uma URL real (da API), usar ela
+    if (result.url && result.url !== 'generated') {
+      return result.url;
+    }
+    // Caso contrário, usar imagem de fallback
     return generatedImages[index % generatedImages.length];
+  };
+
+  const getThumbnailForResult = (result: GeneratedContent, index: number) => {
+    if (result.thumbnail) {
+      return result.thumbnail;
+    }
+    return getImageForResult(result, index);
+  };
+
+  const handleDownload = (result: GeneratedContent) => {
+    const filename = `${result.type}-${result.id}.${result.type === 'video' ? 'mp4' : 'jpg'}`;
+    AIServices.downloadContent(result.url, filename);
   };
 
   if (isGenerating) {
@@ -74,7 +92,8 @@ export const GenerationResults = ({ isGenerating = false, results = [] }: Genera
 
           <div className="grid gap-4">
             {results.map((result, index) => {
-              const imageUrl = getImageForResult(index);
+              const displayUrl = getImageForResult(result, index);
+              const thumbnailUrl = getThumbnailForResult(result, index);
               
               return (
                 <div
@@ -87,7 +106,7 @@ export const GenerationResults = ({ isGenerating = false, results = [] }: Genera
                         {result.type === 'video' ? (
                           <div className="relative w-full h-full">
                             <img
-                              src={imageUrl}
+                              src={thumbnailUrl}
                               alt="Video thumbnail"
                               className="w-full h-full object-cover"
                             />
@@ -97,7 +116,7 @@ export const GenerationResults = ({ isGenerating = false, results = [] }: Genera
                           </div>
                         ) : (
                           <img
-                            src={imageUrl}
+                            src={displayUrl}
                             alt="Generated content"
                             className="w-full h-full object-cover"
                           />
@@ -168,11 +187,22 @@ export const GenerationResults = ({ isGenerating = false, results = [] }: Genera
                             </DialogTrigger>
                             <DialogContent className="max-w-4xl w-full p-0">
                               <div className="relative">
-                                <img
-                                  src={imageUrl}
-                                  alt={result.prompt}
-                                  className="w-full h-auto max-h-[80vh] object-contain"
-                                />
+                                {result.type === 'video' ? (
+                                  <video
+                                    src={result.url}
+                                    controls
+                                    className="w-full h-auto max-h-[80vh] object-contain"
+                                    poster={thumbnailUrl}
+                                  >
+                                    Seu navegador não suporta o elemento de vídeo.
+                                  </video>
+                                ) : (
+                                  <img
+                                    src={displayUrl}
+                                    alt={result.prompt}
+                                    className="w-full h-auto max-h-[80vh] object-contain"
+                                  />
+                                )}
                                 <div className="absolute top-4 right-4">
                                   <DialogTrigger asChild>
                                     <Button variant="ghost" size="sm" className="bg-black/50 text-white hover:bg-black/70">
@@ -189,13 +219,23 @@ export const GenerationResults = ({ isGenerating = false, results = [] }: Genera
                                     <span className="text-white/80 text-sm">
                                       {result.resolution}
                                     </span>
+                                    {result.duration && (
+                                      <span className="text-white/80 text-sm">
+                                        {result.duration}
+                                      </span>
+                                    )}
                                   </div>
                                 </div>
                               </div>
                             </DialogContent>
                           </Dialog>
                           
-                          <Button variant="ghost" size="sm" className="p-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="p-1"
+                            onClick={() => handleDownload(result)}
+                          >
                             <Download className="h-4 w-4" />
                           </Button>
                           <Button variant="ghost" size="sm" className="p-1">

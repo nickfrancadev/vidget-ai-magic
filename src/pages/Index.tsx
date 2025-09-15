@@ -5,6 +5,10 @@ import { ModelSelector } from '@/components/ModelSelector';
 import { PromptEditor } from '@/components/PromptEditor';
 import { GenerationResults } from '@/components/GenerationResults';
 import { useToast } from '@/components/ui/use-toast';
+import { AIServices } from '@/services/aiServices';
+import sampleBag from '@/assets/sample-product-bag.jpg';
+import sampleShoes from '@/assets/sample-product-shoes.jpg';
+import sampleWatch from '@/assets/sample-product-watch.jpg';
 
 interface GeneratedContent {
   id: string;
@@ -17,6 +21,34 @@ interface GeneratedContent {
   duration?: string;
   resolution: string;
 }
+
+interface Product {
+  id: string;
+  name: string;
+  image: string;
+  category: string;
+}
+
+const sampleProducts: Product[] = [
+  {
+    id: '1',
+    name: 'Bolsa de Couro Premium',
+    image: sampleBag,
+    category: 'Acessórios'
+  },
+  {
+    id: '2',
+    name: 'Tênis Esportivo Branco',
+    image: sampleShoes,
+    category: 'Calçados'
+  },
+  {
+    id: '3',
+    name: 'Relógio de Luxo',
+    image: sampleWatch,
+    category: 'Acessórios'
+  }
+];
 
 const Index = () => {
   const { toast } = useToast();
@@ -51,17 +83,31 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
-      // Simular geração de conteúdo (aqui você integraria com APIs reais)
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Obter produtos selecionados
+      const selectedProductsData = sampleProducts.filter(product => 
+        selectedProducts.includes(product.id)
+      );
       
-      const contentType = selectedModel === 'veo3' ? 'video' : 'image';
+      // Chamar serviço de IA real
+      const response = await AIServices.generateContent({
+        prompt,
+        model: selectedModel,
+        selectedProducts: selectedProductsData
+      });
+
+      if (!response.success || !response.data) {
+        throw new Error(response.error || 'Falha na geração de conteúdo');
+      }
+      
+      const contentType = response.data.type;
       const modelName = selectedModel === 'veo3' ? 'VEO3' : 
                        selectedModel === 'nanobanana' ? 'NanoBanana' : 'Creative AI';
       
       const newResult: GeneratedContent = {
         id: Date.now().toString(),
         type: contentType,
-        url: 'generated', // Será mapeado para uma imagem real no componente
+        url: response.data.url,
+        thumbnail: response.data.thumbnail,
         prompt: prompt,
         model: modelName,
         createdAt: new Date().toLocaleString('pt-BR'),
@@ -77,9 +123,10 @@ const Index = () => {
       });
       
     } catch (error) {
+      console.error('Erro na geração:', error);
       toast({
         title: "Erro na geração",
-        description: "Houve um problema ao gerar o conteúdo. Tente novamente.",
+        description: error instanceof Error ? error.message : "Houve um problema ao gerar o conteúdo. Tente novamente.",
         variant: "destructive",
       });
     } finally {
