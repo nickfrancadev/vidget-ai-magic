@@ -1,120 +1,53 @@
 /* 
-IMPORTANTE: Integração Real com APIs Google Gemini
+IMPLEMENTAÇÃO ATUAL - Lovable AI Gateway
 
-Este arquivo demonstra como seria a integração real com as APIs do Google Gemini.
-Em produção, as chamadas de API devem ser feitas através de um backend por questões de:
+Este projeto agora usa o Lovable AI Gateway para geração de conteúdo com IA.
 
-1. SEGURANÇA: API keys não devem ser expostas no frontend
-2. CORS: APIs do Google não permitem chamadas diretas do frontend
-3. RATE LIMITING: Controle de uso deve ser feito no servidor
+VANTAGENS DO LOVABLE AI:
+1. ✅ API Key gerenciada automaticamente (LOVABLE_API_KEY)
+2. ✅ Rate limits gerenciados pelo gateway
+3. ✅ Melhor disponibilidade e estabilidade
+4. ✅ Suporte incluso
+5. ✅ Cotas generosas no plano gratuito
 
-IMPLEMENTAÇÃO RECOMENDADA PARA PRODUÇÃO:
+STATUS ATUAL:
 
-1. Backend (Node.js/Express):
-```javascript
-const express = require('express');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+✅ GERAÇÃO DE IMAGENS - TOTALMENTE FUNCIONAL
+- Modelo: google/gemini-2.5-flash-image-preview (Nano Banana)
+- Endpoint: https://ai.gateway.lovable.dev/v1/chat/completions
+- Edge Function: supabase/functions/generate-image/index.ts
+- Retorna: Base64 data URL pronto para uso
 
-const app = express();
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+⚠️ GERAÇÃO DE VÍDEOS - SIMULADA
+- VEO3 requer operações longas (10-15 minutos por vídeo)
+- Não é ideal para aplicações web interativas
+- Usando vídeos de exemplo para demonstração
+- Para produção real com VEO3, seria necessário:
+  * Fila de processamento assíncrono
+  * Notificações por email/webhook
+  * Armazenamento em storage bucket
+  * Status de processamento em banco de dados
 
-// Endpoint para geração de vídeo
-app.post('/api/generate-video', async (req, res) => {
-  try {
-    const { prompt } = req.body;
-    const model = genAI.getGenerativeModel({ model: "veo3" });
-    
-    const result = await model.generateVideo({
-      prompt: prompt,
-      config: {
-        duration: 15,
-        resolution: '1920x1080'
-      }
-    });
-    
-    res.json({ 
-      success: true, 
-      data: {
-        url: result.videoUrl,
-        thumbnail: result.thumbnailUrl,
-        type: 'video'
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
+DOCUMENTAÇÃO:
+- Lovable AI: https://docs.lovable.dev/features/ai
+- Gemini Image Generation: https://ai.google.dev/gemini-api/docs/image-generation
+- Gemini Video (Veo): https://ai.google.dev/gemini-api/docs/video
 
-// Endpoint para geração de imagem
-app.post('/api/generate-image', async (req, res) => {
-  try {
-    const { prompt } = req.body;
-    const model = genAI.getGenerativeModel({ model: "imagen3" });
-    
-    const result = await model.generateImage({
-      prompt: prompt,
-      config: {
-        resolution: '1024x768',
-        style: 'photographic'
-      }
-    });
-    
-    res.json({ 
-      success: true, 
-      data: {
-        url: result.imageUrl,
-        type: 'image'
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-```
-
-2. Frontend atualizado:
-```typescript
-private static async generateVideo(prompt: string): Promise<GenerationResponse> {
-  const response = await fetch('/api/generate-video', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ prompt }),
-  });
-  
-  return await response.json();
-}
-
-private static async generateImage(prompt: string): Promise<GenerationResponse> {
-  const response = await fetch('/api/generate-image', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ prompt }),
-  });
-  
-  return await response.json();
-}
-```
-
-3. Variáveis de ambiente (.env):
-```
-GOOGLE_API_KEY=sua_chave_api_real_aqui
-```
-
-PARA TESTAR AGORA:
-- O código atual simula as respostas das APIs
-- VEO3 retorna vídeos de exemplo
-- NanoBanana/Imagen retorna imagens geradas do Picsum
-- O download funciona para todos os tipos de mídia
-
+PRÓXIMOS PASSOS PARA MELHORIAS:
+1. Adicionar cache de resultados gerados
+2. Implementar histórico de gerações no banco de dados
+3. Adicionar feedback do usuário sobre qualidade
+4. Para vídeos reais: implementar sistema de fila assíncrona
 */
 
 export const PRODUCTION_NOTES = {
-  security: "API keys devem ficar no backend",
-  cors: "APIs Google não permitem chamadas diretas do frontend",
-  architecture: "Use backend como proxy para as APIs",
-  testing: "Código atual simula respostas reais"
+  imageGeneration: '✅ Integrated with Lovable AI Gateway',
+  videoGeneration: '⚠️ Simulated - VEO3 requires async processing',
+  gateway: 'Using Lovable AI Gateway for better reliability',
+  improvements: [
+    'Add caching for generated content',
+    'Implement generation history in database',
+    'Add user feedback system',
+    'For real videos: implement async queue system'
+  ]
 };

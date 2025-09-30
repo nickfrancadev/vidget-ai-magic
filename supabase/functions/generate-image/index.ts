@@ -13,58 +13,56 @@ serve(async (req) => {
 
   try {
     const { prompt } = await req.json();
-    const apiKey = Deno.env.get('GOOGLE_AI_API_KEY');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
-    if (!apiKey) {
-      throw new Error('GOOGLE_AI_API_KEY not configured');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    console.log('Generating image with Gemini:', prompt);
+    console.log('Generating image with Lovable AI:', prompt);
 
-    // Call Gemini API for image generation
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent`,
-      {
-        method: 'POST',
-        headers: {
-          'x-goog-api-key': apiKey,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
-          }]
-        }),
-      }
-    );
+    // Call Lovable AI Gateway for image generation
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash-image-preview',
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        modalities: ['image', 'text']
+      }),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Gemini API error:', response.status, errorText);
-      throw new Error(`Gemini API error: ${response.status}`);
+      console.error('Lovable AI error:', response.status, errorText);
+      
+      if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+      }
+      if (response.status === 402) {
+        throw new Error('Payment required. Please add credits to your workspace.');
+      }
+      
+      throw new Error(`AI Gateway error: ${response.status}`);
     }
 
     const data = await response.json();
     console.log('Image generated successfully');
 
-    // Extract the image from the response (inline_data)
-    const parts = data.candidates[0].content.parts;
-    let imageBase64 = null;
+    // Extract the image from the response
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
-    for (const part of parts) {
-      if (part.inlineData && part.inlineData.data) {
-        imageBase64 = part.inlineData.data;
-        break;
-      }
-    }
-
-    if (!imageBase64) {
+    if (!imageUrl) {
       throw new Error('No image data in response');
     }
-
-    const imageUrl = `data:image/png;base64,${imageBase64}`;
 
     return new Response(
       JSON.stringify({
