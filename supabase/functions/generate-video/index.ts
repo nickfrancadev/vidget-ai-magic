@@ -19,27 +19,21 @@ serve(async (req) => {
       throw new Error('GOOGLE_AI_API_KEY not configured');
     }
 
-    console.log('Generating video with prompt:', prompt);
+    console.log('Starting video generation with Veo 3:', prompt);
 
-    // Call Google Veo API
+    // Call Veo 3 API (long-running operation)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/veo-003:predict?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001:predictLongRunning`,
       {
         method: 'POST',
         headers: {
+          'x-goog-api-key': apiKey,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          instances: [
-            {
-              prompt: prompt
-            }
-          ],
-          parameters: {
-            duration: "5s",
-            aspectRatio: "16:9",
-            safetyFilterLevel: "block_some"
-          }
+          instances: [{
+            prompt: prompt
+          }]
         }),
       }
     );
@@ -50,15 +44,54 @@ serve(async (req) => {
       throw new Error(`Veo API error: ${response.status}`);
     }
 
-    const data = await response.json();
-    console.log('Video generated successfully');
+    const operationData = await response.json();
+    const operationName = operationData.name;
+    console.log('Video generation started, operation:', operationName);
 
-    // The video is returned as base64 in the predictions array
-    const videoBase64 = data.predictions[0].bytesBase64Encoded;
+    // Poll the operation status
+    let isDone = false;
+    let videoUri = null;
+    const maxAttempts = 60; // 10 minutes max (10s intervals)
+    let attempts = 0;
+
+    while (!isDone && attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
+      attempts++;
+
+      const statusResponse = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/${operationName}`,
+        {
+          headers: {
+            'x-goog-api-key': apiKey,
+          },
+        }
+      );
+
+      const statusData = await statusResponse.json();
+      isDone = statusData.done === true;
+
+      if (isDone) {
+        videoUri = statusData.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri;
+        console.log('Video generation complete, URI:', videoUri);
+      } else {
+        console.log(`Polling attempt ${attempts}/${maxAttempts}...`);
+      }
+    }
+
+    if (!videoUri) {
+      throw new Error('Video generation timeout or failed');
+    }
+
+    // Download the video
+    const videoResponse = await fetch(videoUri, {
+      headers: {
+        'x-goog-api-key': apiKey,
+      },
+    });
+
+    const videoBlob = await videoResponse.arrayBuffer();
+    const videoBase64 = btoa(String.fromCharCode(...new Uint8Array(videoBlob)));
     const videoUrl = `data:video/mp4;base64,${videoBase64}`;
-    
-    // Generate a thumbnail from the first frame (simplified approach)
-    const thumbnailUrl = `https://picsum.photos/400/300?random=${Date.now()}`;
 
     return new Response(
       JSON.stringify({
@@ -66,7 +99,7 @@ serve(async (req) => {
         data: {
           url: videoUrl,
           type: 'video',
-          thumbnail: thumbnailUrl
+          thumbnail: `https://picsum.photos/400/300?random=${Date.now()}`
         }
       }),
       {
