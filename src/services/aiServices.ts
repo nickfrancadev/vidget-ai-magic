@@ -68,49 +68,59 @@ export class AIServices {
   }
 
   private static async generateVideo(prompt: string): Promise<GenerationResponse> {
-    // SIMULAÇÃO: Em produção, isso seria uma chamada real para VEO3 API através do backend
-    console.log('Gerando vídeo com prompt:', prompt);
+    console.log('Gerando vídeo com VEO3:', prompt);
     
-    // Simular processamento
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Retornar URL de vídeo de exemplo
-    const videoUrls = [
-      'https://www.w3schools.com/html/mov_bbb.mp4',
-      'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4',
-      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-    ];
-    
-    const randomVideo = videoUrls[Math.floor(Math.random() * videoUrls.length)];
-    
-    return {
-      success: true,
-      data: {
-        url: randomVideo,
-        type: 'video',
-        thumbnail: `https://picsum.photos/400/300?random=${Date.now()}`
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-video`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt })
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao gerar vídeo');
       }
-    };
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Erro ao chamar generate-video:', error);
+      throw error;
+    }
   }
 
   private static async generateImage(prompt: string): Promise<GenerationResponse> {
-    // SIMULAÇÃO: Em produção, isso seria uma chamada real para Imagen API através do backend
-    console.log('Gerando imagem com prompt:', prompt);
+    console.log('Gerando imagem com NanoBanana:', prompt);
     
-    // Simular processamento
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Gerar URL de imagem única baseada no prompt
-    const seed = prompt.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const imageUrl = `https://picsum.photos/1024/768?random=${seed}`;
-    
-    return {
-      success: true,
-      data: {
-        url: imageUrl,
-        type: 'image'
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-image`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt })
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao gerar imagem');
       }
-    };
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Erro ao chamar generate-image:', error);
+      throw error;
+    }
   }
 
   static downloadContent(url: string, filename: string): void {
@@ -118,16 +128,17 @@ export class AIServices {
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
-    link.target = '_blank';
     
-    // Para URLs externas, abrir em nova aba
-    if (url.startsWith('http')) {
-      link.setAttribute('rel', 'noopener noreferrer');
-      window.open(url, '_blank');
-    } else {
+    // Para data URLs (base64), fazer download direto
+    if (url.startsWith('data:')) {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    } else if (url.startsWith('http')) {
+      // Para URLs externas, abrir em nova aba
+      link.target = '_blank';
+      link.setAttribute('rel', 'noopener noreferrer');
+      window.open(url, '_blank');
     }
   }
 }
