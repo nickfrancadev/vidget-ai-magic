@@ -4,6 +4,7 @@ import { ProductSelector } from '@/components/ProductSelector';
 import { ModelSelector } from '@/components/ModelSelector';
 import { PromptEditor } from '@/components/PromptEditor';
 import { GenerationResults } from '@/components/GenerationResults';
+import { UserPhotoUpload } from '@/components/UserPhotoUpload';
 import { useToast } from '@/components/ui/use-toast';
 import { AIServices } from '@/services/aiServices';
 import sampleBag from '@/assets/sample-product-bag.jpg';
@@ -55,6 +56,7 @@ const Index = () => {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
+  const [userPhoto, setUserPhoto] = useState<File | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResults, setGeneratedResults] = useState<GeneratedContent[]>([]);
 
@@ -92,7 +94,8 @@ const Index = () => {
       const response = await AIServices.generateContent({
         prompt,
         model: selectedModel,
-        selectedProducts: selectedProductsData
+        selectedProducts: selectedProductsData,
+        userPhoto
       });
 
       if (!response.success || !response.data) {
@@ -206,11 +209,25 @@ const Index = () => {
               />
             </div>
 
-            {/* Step 2: Model Selection */}
+            {/* Step 2: User Photo Upload */}
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 bg-ai-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
                   2
+                </div>
+                <h3 className="font-semibold text-text-primary">Upload da sua foto (opcional)</h3>
+              </div>
+              <UserPhotoUpload
+                userPhoto={userPhoto}
+                onPhotoSelect={setUserPhoto}
+              />
+            </div>
+
+            {/* Step 3: Model Selection */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-ai-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  3
                 </div>
                 <h3 className="font-semibold text-text-primary">Escolha o modelo de IA</h3>
               </div>
@@ -220,11 +237,11 @@ const Index = () => {
               />
             </div>
 
-            {/* Step 3: Prompt Configuration */}
+            {/* Step 4: Prompt Configuration */}
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 bg-ai-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  3
+                  4
                 </div>
                 <h3 className="font-semibold text-text-primary">Configure seu prompt</h3>
               </div>

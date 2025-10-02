@@ -9,6 +9,7 @@ interface GenerationRequest {
   prompt: string;
   model: string;
   selectedProducts: Product[];
+  userPhoto?: File | null;
 }
 
 interface GenerationResponse {
@@ -23,14 +24,140 @@ interface GenerationResponse {
 
 // Service para integração com Google Gemini APIs
 export class AIServices {
-  // NOTA: Em produção, as chaves de API devem ficar no backend por segurança
-  // As APIs do Google não podem ser chamadas diretamente do frontend devido a CORS
+  // Instruções críticas para preservação de produto em imagens
+  private static readonly IMAGE_CRITICAL_INSTRUCTIONS = `
+CRITICAL PRESERVATION INSTRUCTIONS:
+Using the provided product image as the PRIMARY reference, you MUST:
+
+1. PRODUCT FIDELITY (ABSOLUTE PRIORITY):
+   - Preserve EXACTLY the product's shape, dimensions, and proportions from the reference image
+   - Maintain ALL visible details: textures, patterns, logos, stitching, materials, hardware, zippers, buttons
+   - Keep the EXACT color palette, including subtle color variations and gradients
+   - Reproduce any branding, labels, or distinctive marks with 100% accuracy
+   - Do NOT alter, simplify, or stylize the product in any way
+   - The product must be immediately recognizable as the exact same item from the reference
+
+2. LIGHTING PRESERVATION:
+   - Analyze and replicate the lighting characteristics from the reference image:
+     * Light source direction and intensity
+     * Shadow depth and softness
+     * Highlight positions and intensity
+     * Overall brightness and contrast levels
+   - Maintain the same lighting quality (natural/artificial, warm/cool tone)
+   - Preserve specular highlights on reflective surfaces
+   - Keep shadow patterns consistent with the original lighting setup
+
+3. MATERIAL ACCURACY:
+   - Leather: grain texture, natural imperfections, sheen level
+   - Fabric: weave pattern, thread density, material drape
+   - Metal: reflectivity, finish (matte/glossy), oxidation or patina
+   - Plastic: transparency level, surface texture, color depth
+   - Maintain the exact material properties visible in the reference
+
+4. PHOTOREALISTIC QUALITY:
+   - Ultra-high resolution product photography standard
+   - Professional e-commerce quality
+   - Crisp focus on the product with accurate depth of field
+   - Natural color grading matching the reference image
+   - No artificial enhancement or beautification of the product itself
+
+5. CONTEXT INTEGRATION:
+   - Integrate the preserved product naturally into this new context
+   - Adjust ONLY the background/environment and person/model (if applicable)
+   - Ensure the product interacts realistically with the new scene (shadows, reflections, scale)
+   - Maintain physical plausibility (gravity, physics, proportions)
+
+6. TECHNICAL SPECIFICATIONS:
+   - Color space: sRGB
+   - Lighting consistency: match reference image's color temperature
+   - Detail level: e-commerce/editorial photography standard
+   - No filters, no artistic interpretation of the product itself
+
+OUTPUT REQUIREMENTS:
+- The product must appear as if it was photographed in the new scene with the SAME camera and lighting setup as the reference
+- Zero deviation from the product's original appearance
+- Professional commercial photography quality
+- Photorealistic integration of product into new context
+
+Remember: The reference product is SACRED. Change the world around it, but NOT the product itself.
+`;
+
+  // Instruções críticas para preservação de produto em vídeos
+  private static readonly VIDEO_CRITICAL_INSTRUCTIONS = `
+CRITICAL PRESERVATION INSTRUCTIONS FOR VIDEO:
+Using the provided product image as the PRIMARY reference, you MUST:
+
+1. PRODUCT FIDELITY (ABSOLUTE PRIORITY):
+   - The product MUST maintain EXACT appearance throughout ALL frames:
+     * Exact shape, dimensions, proportions
+     * All visible details: textures, patterns, logos, stitching, materials
+     * Exact color palette and color variations
+     * All branding and distinctive marks with 100% accuracy
+   - Product consistency is MORE important than scene variety
+   - The product should be immediately recognizable in every frame
+   - Do NOT alter, simplify, or stylize the product at any moment
+
+2. LIGHTING PRESERVATION THROUGHOUT VIDEO:
+   - Replicate the lighting characteristics from the reference image:
+     * Light source direction and intensity
+     * Shadow behavior and softness
+     * Highlight consistency
+     * Overall brightness matching reference
+   - Maintain consistent lighting as the product moves through the scene
+   - Natural light adaptation only (if moving from shade to sun, etc.)
+   - Preserve the original color temperature and lighting mood
+
+3. MOTION & ANIMATION:
+   - Natural, smooth movement appropriate to the scene
+   - Realistic physics (gravity, momentum, fabric drape)
+   - If product is carried/worn: natural interaction with person
+   - If product moves: maintain structural integrity and material properties
+   - Camera movement should complement, not distract from product
+
+4. MATERIAL BEHAVIOR IN MOTION:
+   - Leather: natural flexibility, creasing behavior
+   - Fabric: realistic draping, wrinkle patterns, weight
+   - Metal: consistent reflectivity, rigid movement
+   - Straps/handles: natural hanging, swinging physics
+   - Materials must behave realistically as product moves
+
+5. SCENE INTEGRATION:
+   - Integrate the preserved product naturally into the animated scene
+   - Adjust ONLY the background/environment and actors
+   - Realistic interaction: product shadows, reflections, occlusions
+   - Maintain physical plausibility throughout motion
+   - Scale consistency across all frames
+
+6. TECHNICAL SPECIFICATIONS:
+   - 8 seconds duration, 720p, 24fps
+   - Consistent lighting across all frames
+   - No sudden product appearance changes
+   - Smooth, professional cinematography
+   - E-commerce/commercial video quality
+   - Natural ambient audio if applicable
+
+7. CINEMATOGRAPHY GUIDELINES:
+   - Professional commercial video quality
+   - Product should be clearly visible in majority of frames
+   - Smooth camera movements (no jerky motion)
+   - Appropriate depth of field keeping product in focus
+   - Natural color grading matching reference image
+
+OUTPUT REQUIREMENTS:
+- Every frame must show the SAME product from the reference
+- Product appearance consistency is the #1 priority
+- Cinematic quality with natural movement
+- Zero artistic interpretation of the product itself
+- The product must appear as if filmed in the scene with the SAME lighting as reference
+
+Remember: The reference product is SACRED throughout the entire video. Animate the world around it, maintain the product's exact appearance in every single frame.
+`;
   
   static async generateContent(request: GenerationRequest): Promise<GenerationResponse> {
-    const { prompt, model, selectedProducts } = request;
+    const { prompt, model, selectedProducts, userPhoto } = request;
     
-    // Preparar o prompt com referência aos produtos selecionados
-    const enhancedPrompt = this.enhancePromptWithProducts(prompt, selectedProducts);
+    // Preparar o prompt com referência aos produtos selecionados e instruções críticas
+    const enhancedPrompt = this.enhancePromptWithProducts(prompt, selectedProducts, model);
     
     try {
       // Simular delay da API
@@ -52,17 +179,25 @@ export class AIServices {
     }
   }
 
-  private static enhancePromptWithProducts(prompt: string, products: Product[]): string {
+  private static enhancePromptWithProducts(prompt: string, products: Product[], model: string): string {
     if (products.length === 0) return prompt;
+    
+    // Selecionar instruções críticas baseadas no modelo
+    const criticalInstructions = model === 'veo3' 
+      ? this.VIDEO_CRITICAL_INSTRUCTIONS 
+      : this.IMAGE_CRITICAL_INSTRUCTIONS;
     
     // Substituir [produto] pelo nome do primeiro produto selecionado
     const primaryProduct = products[0];
-    let enhancedPrompt = prompt.replace(/\[produto\]/gi, primaryProduct.name.toLowerCase());
+    let userPromptText = prompt.replace(/\[produto\]/gi, primaryProduct.name.toLowerCase());
     
     // Se não houver [produto] no prompt, adicionar referência ao produto
     if (!prompt.toLowerCase().includes('[produto]') && !prompt.toLowerCase().includes(primaryProduct.name.toLowerCase())) {
-      enhancedPrompt = `${prompt}, featuring ${primaryProduct.name}`;
+      userPromptText = `${prompt}, featuring ${primaryProduct.name}`;
     }
+    
+    // Combinar instruções críticas com o prompt do usuário
+    const enhancedPrompt = criticalInstructions.replace('${userPrompt}', userPromptText);
     
     return enhancedPrompt;
   }
