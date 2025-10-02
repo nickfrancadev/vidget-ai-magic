@@ -12,14 +12,44 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt } = await req.json();
+    const { prompt, productImage, userPhoto } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    console.log('Generating image with Lovable AI:', prompt);
+    console.log('Generating image with Lovable AI');
+    console.log('Has product image:', !!productImage);
+    console.log('Has user photo:', !!userPhoto);
+
+    // Construir o conteúdo com imagens
+    const content: any[] = [
+      {
+        type: 'text',
+        text: prompt
+      }
+    ];
+
+    // Adicionar imagem do produto
+    if (productImage) {
+      content.push({
+        type: 'image_url',
+        image_url: {
+          url: productImage
+        }
+      });
+    }
+
+    // Adicionar foto do usuário se fornecida
+    if (userPhoto) {
+      content.push({
+        type: 'image_url',
+        image_url: {
+          url: userPhoto
+        }
+      });
+    }
 
     // Call Lovable AI Gateway for image generation
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -33,7 +63,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'user',
-            content: prompt
+            content: content
           }
         ],
         modalities: ['image', 'text']

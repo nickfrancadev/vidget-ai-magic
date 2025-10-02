@@ -166,7 +166,17 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
       if (model === 'veo3') {
         return await this.generateVideo(enhancedPrompt);
       } else if (model === 'nanobanana') {
-        return await this.generateImage(enhancedPrompt);
+        // Converter imagem do produto para base64
+        const primaryProduct = selectedProducts[0];
+        const productImageBase64 = await this.imageToBase64(primaryProduct.image);
+        
+        // Converter foto do usuário para base64, se fornecida
+        let userPhotoBase64: string | undefined;
+        if (userPhoto) {
+          userPhotoBase64 = await this.imageToBase64(userPhoto);
+        }
+        
+        return await this.generateImage(enhancedPrompt, productImageBase64, userPhotoBase64);
       } else {
         throw new Error('Modelo não suportado');
       }
@@ -230,7 +240,11 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
     }
   }
 
-  private static async generateImage(prompt: string): Promise<GenerationResponse> {
+  private static async generateImage(
+    prompt: string, 
+    productImage: string,
+    userPhoto?: string
+  ): Promise<GenerationResponse> {
     console.log('Gerando imagem com NanoBanana:', prompt);
     
     try {
@@ -241,7 +255,11 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ prompt })
+          body: JSON.stringify({ 
+            prompt,
+            productImage,
+            userPhoto
+          })
         }
       );
 
@@ -255,6 +273,28 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
     } catch (error) {
       console.error('Erro ao chamar generate-image:', error);
       throw error;
+    }
+  }
+
+  private static async imageToBase64(imageSource: string | File): Promise<string> {
+    if (typeof imageSource === 'string') {
+      // Se for uma URL de imagem do projeto, buscar e converter
+      const response = await fetch(imageSource);
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } else {
+      // Se for um File object
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(imageSource);
+      });
     }
   }
 

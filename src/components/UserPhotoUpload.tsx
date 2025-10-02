@@ -52,10 +52,15 @@ export const UserPhotoUpload = ({ userPhoto, onPhotoSelect }: UserPhotoUploadPro
           Faça upload de uma foto para visualizar como o produto ficaria em você
         </p>
 
+        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-sm text-yellow-600 dark:text-yellow-400">
+          ⚠️ <strong>Atenção:</strong> Arquivos HEIC (formato iPhone) não são suportados. 
+          Por favor, converta para JPG ou PNG antes de fazer upload.
+        </div>
+
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/jpg,image/png,image/webp"
           onChange={handleFileSelect}
           className="hidden"
         />
