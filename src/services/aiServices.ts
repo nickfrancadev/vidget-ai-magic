@@ -1,4 +1,6 @@
 import { PromptOptimizer } from './promptOptimizer';
+import { SmartProductDetector } from './smartProductDetector';
+import { PromptOptimizerV2 } from './promptOptimizerV2';
 
 interface Product {
   id: string;
@@ -253,9 +255,42 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
     productImage: string,
     userPhoto?: string
   ): Promise<GenerationResponse> {
-    console.log('Gerando imagem com NanoBanana:', prompt);
+    console.log('Gerando imagem com NanoBanana');
     
     try {
+      // Detecção automática e otimização de prompt
+      let finalPrompt = prompt;
+      let negativePrompt = '';
+      
+      try {
+        if (userPhoto && import.meta.env.VITE_GEMINI_API_KEY) {
+          const detector = new SmartProductDetector();
+          const detection = await detector.processAutomatically(
+            productImage,
+            userPhoto,
+            prompt
+          );
+
+          console.log('🔍 Produto detectado:', detection.productAnalysis.product_name);
+          console.log('📦 Categoria:', detection.productAnalysis.category);
+
+          const optimizer = new PromptOptimizerV2();
+          const optimized = optimizer.optimize(
+            detection.internalPrompt,
+            'image'
+          );
+
+          console.log('📝 Prompt otimizado gerado');
+          console.log('🚫 Negative prompt:', optimized.negativePrompt);
+
+          finalPrompt = optimized.optimizedPrompt;
+          negativePrompt = optimized.negativePrompt;
+        }
+      } catch (detectionError) {
+        console.warn('Falha na detecção automática, usando prompt original:', detectionError);
+        // Fallback: usar prompt original
+      }
+      
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-image`,
         {
@@ -264,9 +299,10 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ 
-            prompt,
+            prompt: finalPrompt,
             productImage,
-            userPhoto
+            userPhoto,
+            negativePrompt
           })
         }
       );
