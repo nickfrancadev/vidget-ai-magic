@@ -37,6 +37,9 @@ export class SmartProductDetector {
 
   async analyzeProductImage(imageBase64: string): Promise<ProductAnalysis> {
     try {
+      console.log('🔑 API Key presente:', !!import.meta.env.VITE_GEMINI_API_KEY);
+      console.log('📸 Product image size:', imageBase64?.length || 0);
+      
       const model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
       
       const prompt = `Analyze this product image and return ONLY a JSON object with this exact structure:
@@ -51,32 +54,51 @@ export class SmartProductDetector {
 
 Be precise and return ONLY the JSON, no additional text.`;
 
+      console.log('📝 Prompt length:', prompt.length);
+
+      // Limpar prefixo base64 se existir
+      const cleanImage = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+      console.log('🧹 Clean image size:', cleanImage.length);
+
       const imagePart = {
         inlineData: {
-          data: imageBase64.replace(/^data:image\/\w+;base64,/, ''),
+          data: cleanImage,
           mimeType: "image/jpeg"
         }
       };
 
       const result = await model.generateContent([prompt, imagePart]);
       const response = await result.response;
+      
+      console.log('📦 Response recebida:', !!response);
+      
       const text = response.text();
+      console.log('📄 Response text length:', text.length);
       
       // Extrair JSON do texto
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        throw new Error('Resposta inválida da API');
+        console.error('❌ Resposta não contém JSON válido');
+        console.log('Response completa:', text);
+        throw new Error('Resposta inválida da API - JSON não encontrado');
       }
       
+      console.log('✅ JSON extraído com sucesso');
       return JSON.parse(jsonMatch[0]);
     } catch (error) {
-      console.error('Erro ao analisar produto:', error);
+      console.error('❌ Erro ao analisar produto:', error);
+      if (error instanceof Error) {
+        console.error('Mensagem de erro:', error.message);
+        console.error('Stack:', error.stack);
+      }
       throw error;
     }
   }
 
   async analyzeSceneImage(imageBase64: string): Promise<SceneAnalysis> {
     try {
+      console.log('🎬 Scene image size:', imageBase64?.length || 0);
+      
       const model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
       
       const prompt = `Analyze this scene/person image and return ONLY a JSON object with this exact structure:
@@ -95,26 +117,43 @@ For detected_items_to_replace, identify items people are wearing/using that coul
 
 Be precise and return ONLY the JSON, no additional text.`;
 
+      console.log('📝 Scene prompt length:', prompt.length);
+
+      // Limpar prefixo base64 se existir
+      const cleanImage = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+      console.log('🧹 Clean scene image size:', cleanImage.length);
+
       const imagePart = {
         inlineData: {
-          data: imageBase64.replace(/^data:image\/\w+;base64,/, ''),
+          data: cleanImage,
           mimeType: "image/jpeg"
         }
       };
 
       const result = await model.generateContent([prompt, imagePart]);
       const response = await result.response;
+      
+      console.log('📦 Scene response recebida:', !!response);
+      
       const text = response.text();
+      console.log('📄 Scene response text length:', text.length);
       
       // Extrair JSON do texto
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        throw new Error('Resposta inválida da API');
+        console.error('❌ Resposta de cena não contém JSON válido');
+        console.log('Response completa:', text);
+        throw new Error('Resposta inválida da API - JSON não encontrado na análise de cena');
       }
       
+      console.log('✅ Scene JSON extraído com sucesso');
       return JSON.parse(jsonMatch[0]);
     } catch (error) {
-      console.error('Erro ao analisar cena:', error);
+      console.error('❌ Erro ao analisar cena:', error);
+      if (error instanceof Error) {
+        console.error('Mensagem de erro:', error.message);
+        console.error('Stack:', error.stack);
+      }
       throw error;
     }
   }
