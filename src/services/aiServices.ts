@@ -1,3 +1,5 @@
+import { PromptOptimizer } from './promptOptimizer';
+
 interface Product {
   id: string;
   name: string;
@@ -24,7 +26,9 @@ interface GenerationResponse {
 
 // Service para integração com Google Gemini APIs
 export class AIServices {
-  // Instruções críticas para preservação de produto em imagens
+  private static promptOptimizer = new PromptOptimizer();
+  
+  // Instruções críticas para preservação de produto em imagens (DEPRECATED - usando PromptOptimizer)
   private static readonly IMAGE_CRITICAL_INSTRUCTIONS = `
 CRITICAL PRESERVATION INSTRUCTIONS:
 Using the provided product image as the PRIMARY reference, you MUST:
@@ -192,13 +196,9 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
   private static enhancePromptWithProducts(prompt: string, products: Product[], model: string): string {
     if (products.length === 0) return prompt;
     
-    // Selecionar instruções críticas baseadas no modelo
-    const criticalInstructions = model === 'veo3' 
-      ? this.VIDEO_CRITICAL_INSTRUCTIONS 
-      : this.IMAGE_CRITICAL_INSTRUCTIONS;
+    const primaryProduct = products[0];
     
     // Substituir [produto] pelo nome do primeiro produto selecionado
-    const primaryProduct = products[0];
     let userPromptText = prompt.replace(/\[produto\]/gi, primaryProduct.name.toLowerCase());
     
     // Se não houver [produto] no prompt, adicionar referência ao produto
@@ -206,10 +206,18 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
       userPromptText = `${prompt}, featuring ${primaryProduct.name}`;
     }
     
-    // Combinar instruções críticas com o prompt do usuário
-    const enhancedPrompt = criticalInstructions.replace('${userPrompt}', userPromptText);
+    // Usar o PromptOptimizer para gerar instruções específicas por categoria
+    const contentType = model === 'veo3' ? 'video' : 'image';
+    const optimization = this.promptOptimizer.optimize(
+      userPromptText,
+      primaryProduct.name,
+      contentType
+    );
     
-    return enhancedPrompt;
+    console.log('Categoria detectada:', optimization.detectedCategory);
+    console.log('Regra anatômica:', optimization.anatomicRule);
+    
+    return optimization.optimizedPrompt;
   }
 
   private static async generateVideo(prompt: string): Promise<GenerationResponse> {
