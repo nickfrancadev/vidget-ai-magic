@@ -19,7 +19,7 @@ interface PromptEditorProps {
   contentType: 'video' | 'image';
   onGenerate: () => void;
   isGenerating: boolean;
-  canGenerate: boolean;
+  canGenerate: boolean | string;
 }
 
 export const PromptEditor = ({ 

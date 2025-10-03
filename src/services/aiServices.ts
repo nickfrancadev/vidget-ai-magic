@@ -1,6 +1,6 @@
 import { PromptOptimizer } from './promptOptimizer';
 import { SmartProductDetector } from './smartProductDetector';
-import { PromptOptimizerV2 } from './promptOptimizerV2';
+import { EnhancedPromptOptimizer } from './promptOptimizerV2';
 
 interface Product {
   id: string;
@@ -274,7 +274,7 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
           console.log('🔍 Produto detectado:', detection.productAnalysis.product_name);
           console.log('📦 Categoria:', detection.productAnalysis.category);
 
-          const optimizer = new PromptOptimizerV2();
+          const optimizer = new EnhancedPromptOptimizer();
           const optimized = optimizer.optimize(
             detection.internalPrompt,
             'image'

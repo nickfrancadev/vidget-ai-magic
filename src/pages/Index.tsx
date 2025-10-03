@@ -73,10 +73,10 @@ const Index = () => {
   };
 
   const handleGenerate = async () => {
-    if (!selectedModel || selectedProducts.length === 0 || !prompt.trim()) {
+    if (!selectedModel || selectedProducts.length === 0) {
       toast({
         title: "Configuração incompleta",
-        description: "Selecione produtos, modelo de IA e escreva um prompt para gerar conteúdo.",
+        description: "Selecione produtos e modelo de IA para gerar conteúdo.",
         variant: "destructive",
       });
       return;
@@ -142,7 +142,7 @@ const Index = () => {
     return 'image';
   };
 
-  const canGenerate = selectedProducts.length > 0 && selectedModel && prompt.trim().length > 0;
+  const canGenerate = selectedProducts.length > 0 && selectedModel;
 
   return (
     <div className="min-h-screen bg-background">
@@ -243,7 +243,7 @@ const Index = () => {
                 <div className="w-6 h-6 bg-ai-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
                   4
                 </div>
-                <h3 className="font-semibold text-text-primary">Configure seu prompt</h3>
+                <h3 className="font-semibold text-text-primary">Configure seu prompt (opcional)</h3>
               </div>
               <PromptEditor
                 prompt={prompt}
