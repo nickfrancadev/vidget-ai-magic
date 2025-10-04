@@ -162,6 +162,9 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
   static async generateContent(request: GenerationRequest): Promise<GenerationResponse> {
     const { prompt, model, selectedProducts, userPhoto } = request;
     
+    console.log('🔍 AIServices - selectedProducts recebido:', selectedProducts);
+    console.log('🔍 AIServices - model:', model);
+    
     // Preparar o prompt com referência aos produtos selecionados e instruções críticas
     const enhancedPrompt = this.enhancePromptWithProducts(prompt, selectedProducts, model);
     
