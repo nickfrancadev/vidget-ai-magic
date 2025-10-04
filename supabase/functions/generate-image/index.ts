@@ -50,19 +50,30 @@ serve(async (req) => {
       const editContent = [
         {
           type: 'text',
-          text: `TASK: Digitally place/apply the product shown in the second image onto the person in the first image.
+          text: `CRITICAL EDITING TASK: Apply the clothing/accessory product from the second image onto THE SAME PERSON shown in the first image.
 
-INSTRUCTIONS:
-- The first image shows a person
-- The second image shows the product (clothing/accessory)
-- Replace the corresponding item on the person with the product from the second image
-- Maintain photorealistic quality
-- Preserve the person's pose, face, and environment
-- Only modify the area where the product should be worn
-- Ensure natural lighting and shadows
-- The product should look naturally worn/used by the person
+CRITICAL RULES - MUST FOLLOW:
+1. SINGLE PERSON ONLY: Keep ONLY the person from the first image. DO NOT add, duplicate, or create any additional people.
+2. EXACT PERSON PRESERVATION: The person's face, body, pose, and position must remain EXACTLY as shown in the first image.
+3. PRODUCT APPLICATION: Replace ONLY the corresponding clothing item with the product from the second image.
+4. BACKGROUND PRESERVATION: Keep the entire background, environment, and all other elements from the first image unchanged.
 
-${prompt}`
+FORBIDDEN ACTIONS:
+❌ DO NOT add any extra people to the scene
+❌ DO NOT duplicate the person
+❌ DO NOT create a second person
+❌ DO NOT modify the person's face, hair, or body structure
+❌ DO NOT change the background or environment
+
+REQUIRED OUTPUT:
+✓ Same exact person from first image
+✓ Same pose and position
+✓ Same background and environment
+✓ Only the clothing item replaced with the product
+✓ Natural, photorealistic integration
+✓ Proper lighting and shadows matching the original scene
+
+${prompt || 'Apply the product naturally on the person.'}`
         },
         {
           type: 'image_url',
