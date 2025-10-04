@@ -172,8 +172,17 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
       if (model === 'veo3') {
         return await this.generateVideo(enhancedPrompt);
       } else if (model === 'nanobanana') {
+        // Validar se há produtos selecionados
+        if (!selectedProducts || selectedProducts.length === 0) {
+          throw new Error('Selecione pelo menos um produto para gerar imagem');
+        }
+        
         // Converter imagem do produto para base64
         const primaryProduct = selectedProducts[0];
+        if (!primaryProduct || !primaryProduct.image) {
+          throw new Error('Produto selecionado não possui imagem válida');
+        }
+        
         const productImageBase64 = await this.imageToBase64(primaryProduct.image);
         
         // Converter foto do usuário para base64, se fornecida
