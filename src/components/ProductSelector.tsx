@@ -5,6 +5,12 @@ import { Card } from '@/components/ui/card';
 import sampleBag from '@/assets/sample-product-bag.jpg';
 import sampleShoes from '@/assets/sample-product-shoes.jpg';
 import sampleWatch from '@/assets/sample-product-watch.jpg';
+import sampleTshirtMale from '@/assets/sample-product-tshirt-male.jpg';
+import sampleBlouseFemale from '@/assets/sample-product-blouse-female.jpg';
+import sampleDressFemale from '@/assets/sample-product-dress-female.jpg';
+import sampleJeansFemale from '@/assets/sample-product-jeans-female.jpg';
+import sampleJeansMale from '@/assets/sample-product-jeans-male.jpg';
+import sampleNecklace from '@/assets/sample-product-necklace.jpg';
 
 interface Product {
   id: string;
@@ -30,6 +36,42 @@ const sampleProducts: Product[] = [
     id: '3',
     name: 'Relógio de Luxo',
     image: sampleWatch,
+    category: 'Acessórios'
+  },
+  {
+    id: '4',
+    name: 'Camiseta Masculina',
+    image: sampleTshirtMale,
+    category: 'Roupas'
+  },
+  {
+    id: '5',
+    name: 'Blusinha Feminina',
+    image: sampleBlouseFemale,
+    category: 'Roupas'
+  },
+  {
+    id: '6',
+    name: 'Vestido Feminino',
+    image: sampleDressFemale,
+    category: 'Roupas'
+  },
+  {
+    id: '7',
+    name: 'Calça Jeans Feminina',
+    image: sampleJeansFemale,
+    category: 'Roupas'
+  },
+  {
+    id: '8',
+    name: 'Calça Jeans Masculina',
+    image: sampleJeansMale,
+    category: 'Roupas'
+  },
+  {
+    id: '9',
+    name: 'Colar',
+    image: sampleNecklace,
     category: 'Acessórios'
   }
 ];

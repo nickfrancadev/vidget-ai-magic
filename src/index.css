@@ -18,7 +18,7 @@
     
     /* Surface colors */
     --surface: 0 0% 100%;
-    --surface-elevated: 255 255 255;
+    --surface-elevated: 0 0% 100%;
     --surface-muted: 248 250 252;
     
     /* Text colors */
