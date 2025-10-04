@@ -270,50 +270,32 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
     console.log('Gerando imagem com NanoBanana');
     
     try {
-      // Detecção automática e otimização de prompt
+      // Variáveis para controle
       let finalPrompt = prompt;
-      let negativePrompt = '';
-      
-      try {
-        if (userPhoto && import.meta.env.VITE_GEMINI_API_KEY) {
-          const detector = new SmartProductDetector();
-          const detection = await detector.processAutomatically(
-            productImage,
-            userPhoto,
-            prompt
-          );
-
-          console.log('🔍 Produto detectado:', detection.productAnalysis.product_name);
-          console.log('📦 Categoria:', detection.productAnalysis.category);
-
-          const optimizer = new EnhancedPromptOptimizer();
-          const optimized = optimizer.optimize(
-            detection.internalPrompt,
-            'image'
-          );
-
-          console.log('📝 Prompt otimizado gerado');
-          console.log('🚫 Negative prompt:', optimized.negativePrompt);
-
-          finalPrompt = optimized.optimizedPrompt;
-          negativePrompt = optimized.negativePrompt;
-        }
-      } catch (detectionError) {
-        console.warn('Falha na detecção automática, usando prompt original:', detectionError);
-        // Fallback: usar prompt original
-      }
-      
-      // Detectar categoria do produto para enviar ao backend
       let detectedCategory = 'unknown';
+      
+      // Simplificar o prompt para edição de imagem quando há foto do usuário
+      const editPrompt = prompt ? 
+        `Replace the clothing item on the person with the product shown in the reference image. ${prompt}` :
+        `Replace the corresponding clothing item on the person with the product shown in the reference image. Maintain photorealistic quality and natural appearance.`;
+      
+      // Tentar detectar categoria do produto
       if (userPhoto && import.meta.env.VITE_GEMINI_API_KEY) {
         try {
           const detector = new SmartProductDetector();
           const productAnalysis = await detector.analyzeProductImage(productImage);
           detectedCategory = productAnalysis.category;
-          console.log('📦 Categoria detectada para debug:', detectedCategory);
+          console.log('📦 Categoria detectada:', detectedCategory);
+          
+          // Usar prompt simplificado para edição
+          finalPrompt = editPrompt;
         } catch (e) {
           console.warn('Não foi possível detectar categoria:', e);
+          finalPrompt = editPrompt;
         }
+      } else if (userPhoto) {
+        // Se temos userPhoto mas não temos GEMINI_API_KEY, usar prompt simples
+        finalPrompt = editPrompt;
       }
       
       const response = await fetch(
@@ -327,7 +309,6 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
             prompt: finalPrompt,
             productImage,
             userPhoto,
-            negativePrompt,
             category: detectedCategory
           })
         }
