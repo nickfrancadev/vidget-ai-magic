@@ -7,8 +7,8 @@
 @layer base {
   :root {
     /* Base colors */
-    --background: 248 250 252;
-    --foreground: 226 232 240;
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
 
     /* AI Brand colors */
     --ai-primary: 270 91% 65%;
@@ -19,7 +19,7 @@
     /* Surface colors */
     --surface: 0 0% 100%;
     --surface-elevated: 0 0% 100%;
-    --surface-muted: 248 250 252;
+    --surface-muted: 0 0% 98%;
     
     /* Text colors */
     --text-primary: 226 29% 17%;
