@@ -303,6 +303,19 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
         // Fallback: usar prompt original
       }
       
+      // Detectar categoria do produto para enviar ao backend
+      let detectedCategory = 'unknown';
+      if (userPhoto && import.meta.env.VITE_GEMINI_API_KEY) {
+        try {
+          const detector = new SmartProductDetector();
+          const productAnalysis = await detector.analyzeProductImage(productImage);
+          detectedCategory = productAnalysis.category;
+          console.log('📦 Categoria detectada para debug:', detectedCategory);
+        } catch (e) {
+          console.warn('Não foi possível detectar categoria:', e);
+        }
+      }
+      
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-image`,
         {
@@ -314,7 +327,8 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
             prompt: finalPrompt,
             productImage,
             userPhoto,
-            negativePrompt
+            negativePrompt,
+            category: detectedCategory
           })
         }
       );
