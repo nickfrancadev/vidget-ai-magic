@@ -97,6 +97,36 @@
       return null;
     },
     
+    // Detectar categoria do produto
+    detectProductCategory: function() {
+      const productCategories = {
+        'calcados': ['tênis', 'tenis', 'sapato', 'bota', 'sandália', 'sandalia', 'chinelo', 'shoe', 'sneaker'],
+        'roupas_superiores': ['camisa', 'camiseta', 'blusa', 'suéter', 'sweater', 'jaqueta', 'casaco', 'blazer', 'shirt', 'jacket'],
+        'roupas_inferiores': ['calça', 'short', 'bermuda', 'saia', 'legging', 'jeans', 'pants', 'skirt'],
+        'bolsas': ['bolsa', 'mochila', 'pochete', 'bag', 'backpack', 'purse'],
+        'acessorios_cabeca': ['boné', 'bone', 'chapéu', 'chapeu', 'gorro', 'cap', 'hat'],
+        'acessorios_pulso': ['relógio', 'relogio', 'pulseira', 'watch', 'bracelet'],
+        'oculos': ['óculos', 'oculos', 'glasses', 'sunglasses'],
+        'joias': ['colar', 'brinco', 'anel', 'necklace', 'earring', 'ring']
+      };
+      
+      const pageText = document.body.innerText.toLowerCase();
+      const pageTitle = document.title.toLowerCase();
+      const combinedText = pageText + ' ' + pageTitle;
+      
+      for (const [category, keywords] of Object.entries(productCategories)) {
+        for (const keyword of keywords) {
+          if (combinedText.includes(keyword)) {
+            console.log('🏷️ Categoria detectada:', category, 'via keyword:', keyword);
+            return category;
+          }
+        }
+      }
+      
+      console.log('🏷️ Categoria não detectada, usando "unknown"');
+      return 'unknown';
+    },
+    
     // Injetar CSS
     injectStyles: function() {
       const styles = `
@@ -461,7 +491,7 @@
               <input type="file" id="vidget-file-input" accept="image/jpeg,image/jpg,image/png,image/heic" />
               <label for="vidget-file-input">
                 <div class="vidget-upload-button">Escolher Foto</div>
-                <div class="vidget-upload-formats">Formatos aceitos: JPG, PNG, HEIC</div>
+                <div class="vidget-upload-formats">Formatos aceitos: JPG, PNG (HEIC não suportado)</div>
               </label>
             </div>
           </div>
@@ -561,9 +591,15 @@
       }
       
       // Validar tipo
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/heic'];
-      if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.heic')) {
-        this.showError('Formato inválido. Use JPG, PNG ou HEIC');
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        this.showError('Formato inválido. Use JPG, PNG ou WebP (HEIC não suportado)');
+        return;
+      }
+      
+      // Validar se tem produto detectado
+      if (!this.productImage) {
+        this.showError('Não foi possível detectar a imagem do produto nesta página');
         return;
       }
       
@@ -606,38 +642,73 @@
     
     // Chamar API para gerar imagem
     generateImage: async function(userPhotoBase64) {
-      console.log('Calling API:', this.config.apiEndpoint);
+      console.log('🎨 Generating image with Vidget Widget');
+      console.log('📦 Product image:', this.productImage ? 'Present' : 'Missing');
+      console.log('📸 User photo:', userPhotoBase64 ? 'Present' : 'Missing');
       
-      const response = await fetch(this.config.apiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productImage: this.productImage,
-          userPhoto: userPhotoBase64,
-          prompt: this.config.customPrompt || 'Apply the product naturally on the person'
-        })
-      });
+      // Detectar categoria do produto
+      const category = this.detectProductCategory();
+      console.log('🏷️ Product category:', category);
       
-      if (!response.ok) {
-        let errorMessage = 'Erro ao gerar imagem';
-        try {
-          const error = await response.json();
-          errorMessage = error.error || error.message || errorMessage;
-        } catch (e) {
-          console.error('Failed to parse error response:', e);
+      // Criar prompt baseado na categoria
+      const categoryPrompts = {
+        'calcados': 'Replace the footwear on the person with the product shown in the reference image. The shoes MUST be worn ON the feet.',
+        'roupas_superiores': 'Replace the upper body clothing with the product shown in the reference image. The garment MUST be worn ON the torso.',
+        'roupas_inferiores': 'Replace the lower body clothing with the product shown in the reference image. The garment MUST be worn ON the legs.',
+        'bolsas': 'Add the product bag being carried by the person (shoulder, hand, or back).',
+        'acessorios_cabeca': 'Add the product ON the person\'s head.',
+        'acessorios_pulso': 'Add the product ON the person\'s wrist.',
+        'oculos': 'Add the product ON the person\'s face.',
+        'joias': 'Add the product jewelry naturally on the person.',
+        'unknown': 'Apply the product shown in the reference image naturally on the person.'
+      };
+      
+      const prompt = this.config.customPrompt || 
+                     categoryPrompts[category] || 
+                     categoryPrompts['unknown'];
+      
+      console.log('📝 Generated prompt:', prompt);
+      
+      try {
+        const response = await fetch(this.config.apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt: prompt,
+            productImage: this.productImage,
+            userPhoto: userPhotoBase64,
+            category: category
+          })
+        });
+
+        console.log('📡 Response status:', response.status);
+
+        if (!response.ok) {
+          let errorMessage = 'Erro ao gerar imagem';
+          try {
+            const error = await response.json();
+            errorMessage = error.error || error.message || errorMessage;
+            console.error('❌ API Error:', error);
+          } catch (e) {
+            console.error('❌ Failed to parse error response:', e);
+          }
+          throw new Error(errorMessage);
         }
-        throw new Error(errorMessage);
+
+        const data = await response.json();
+        console.log('✅ Response data:', data);
+
+        if (!data.success) {
+          throw new Error(data.error || 'Erro ao gerar imagem');
+        }
+
+        return data.data;
+      } catch (error) {
+        console.error('❌ Generate image error:', error);
+        throw error;
       }
-      
-      const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.error || 'Erro ao gerar imagem');
-      }
-      
-      return data.data;
     },
     
     // Mostrar loading
