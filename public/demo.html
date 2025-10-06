@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo - Vidget Widget</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    h1 {
+      font-size: 48px;
+      color: #1f2937;
+      margin-bottom: 16px;
+    }
+    
+    .subtitle {
+      font-size: 20px;
+      color: #6b7280;
+    }
+    
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .product-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .product-image {
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+      background: #f9fafb;
+    }
+    
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .product-info {
+      padding: 20px;
+    }
+    
+    .product-name {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+    
+    .product-price {
+      font-size: 28px;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 16px;
+    }
+    
+    .product-description {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+    
+    .badge {
+      display: inline-block;
+      background: #10b981;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+    
+    .instructions {
+      background: #f0f9ff;
+      border: 2px solid #0ea5e9;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 40px;
+    }
+    
+    .instructions h2 {
+      color: #0369a1;
+      margin-bottom: 16px;
+    }
+    
+    .instructions ol {
+      margin-left: 20px;
+      color: #075985;
+    }
+    
+    .instructions li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✨ Vidget Widget Demo</h1>
+      <p class="subtitle">Experimente produtos virtualmente em você</p>
+    </header>
+    
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-image">
+          <img 
+            src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop" 
+            alt="Vestido Floral Elegante"
+            data-product-image
+          >
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Vestido Floral Elegante</h3>
+          <p class="product-price">R$ 299,90</p>
+          <p class="product-description">
+            Vestido midi com estampa floral delicada, perfeito para ocasiões especiais. 
+            Tecido leve e confortável com caimento elegante.
+          </p>
+          <span class="badge">✨ Experimente Virtual</span>
+        </div>
+      </div>
+      
+      <div class="product-card">
+        <div class="product-image">
+          <img 
+            src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800&auto=format&fit=crop" 
+            alt="Blusa Branca Premium"
+          >
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Blusa Branca Premium</h3>
+          <p class="product-price">R$ 189,90</p>
+          <p class="product-description">
+            Blusa social em tecido premium com acabamento impecável. 
+            Ideal para looks profissionais e elegantes.
+          </p>
+          <span class="badge">✨ Experimente Virtual</span>
+        </div>
+      </div>
+      
+      <div class="product-card">
+        <div class="product-image">
+          <img 
+            src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&auto=format&fit=crop" 
+            alt="Jaqueta Jeans Clássica"
+          >
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Jaqueta Jeans Clássica</h3>
+          <p class="product-price">R$ 249,90</p>
+          <p class="product-description">
+            Jaqueta jeans oversized com lavagem moderna. 
+            Peça versátil que combina com diversos estilos.
+          </p>
+          <span class="badge">✨ Experimente Virtual</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="instructions">
+      <h2>📸 Como usar o Vidget Widget</h2>
+      <ol>
+        <li>Clique no botão roxo "Veja como fica em você" no canto inferior direito</li>
+        <li>Faça upload de uma foto sua (de corpo inteiro ou busto, dependendo do produto)</li>
+        <li>Aguarde alguns segundos enquanto a IA aplica o produto na sua foto</li>
+        <li>Veja o resultado e baixe a imagem se desejar!</li>
+      </ol>
+      <p style="margin-top: 16px; color: #075985;">
+        <strong>Dica:</strong> Para melhores resultados, use fotos com boa iluminação e fundo neutro.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Widget Vidget -->
+  <script src="/vidget-widget.js"></script>
+  <script>
+    // Inicializar o widget
+    VidgetWidget.init({
+      // Detecta automaticamente a primeira imagem de produto
+      autoDetectProduct: true,
+      position: 'bottom-right',
+      primaryColor: '#667eea',
+      buttonText: 'Veja como fica em você',
+      buttonIcon: '✨',
+      
+      // Callbacks opcionais
+      onSuccess: function(result) {
+        console.log('✅ Imagem gerada com sucesso!', result);
+      },
+      onError: function(error) {
+        console.error('❌ Erro ao gerar imagem:', error);
+      }
+    });
+  </script>
+</body>
+</html>
