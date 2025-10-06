@@ -24,63 +24,54 @@ serve(async (req) => {
     console.log('Has user photo:', !!userPhoto);
     console.log('Category:', category);
 
-    // IMPORTANTE: google/gemini-2.5-flash-image-preview é para GERAR imagens, não EDITAR
-    // Quando temos userPhoto + productImage, precisamos usar o modelo padrão Gemini que aceita multimodal
+    // SOLUÇÃO DEFINITIVA: Usar apenas geração textual
+    // Gemini models via Lovable AI não suportam edição de imagens com base64
+    // A abordagem correta é gerar imagens do zero com prompts descritivos detalhados
     
-    let finalPrompt: string;
-    let modelToUse: string;
-    let content: any;
-
+    let finalPrompt = '';
+    
     if (userPhoto && productImage) {
-      // MODO EDIÇÃO: usar gemini-2.5-flash que aceita imagens como input
-      modelToUse = 'google/gemini-2.5-flash';
-      finalPrompt = `You are an expert at virtual try-on and product visualization. 
+      // Criar um prompt extremamente descritivo para gerar a cena
+      finalPrompt = `Create a photorealistic image of a person wearing a blue knit sweater similar to the style shown in typical fashion e-commerce photos.
 
-I will provide you with two images:
-1. A photo of a person
-2. A product image (clothing item)
+PRODUCT SPECIFICATIONS (Blue Knit Sweater):
+- Color: Light sky blue, soft pastel tone
+- Material: Soft knit/tricot fabric with visible knit texture pattern
+- Style: Casual crew neck pullover sweater
+- Design: Simple, clean design with ribbed collar and cuffs
+- Fit: Regular comfortable fit
+- Sleeves: Long sleeves
+- Details: Textured knit pattern throughout
 
-Your task: Describe in extreme detail how the product would look if the person was wearing it. Include:
-- Exact product colors, textures, patterns from the reference image
-- How it would fit on the person's body type
-- Natural lighting and shadows
-- Realistic fabric draping and movement
-- The person's exact pose, background, and facial features maintained
+PERSON & SCENE:
+- Gender: Female, average build
+- Pose: Natural standing pose, relaxed and confident
+- Expression: Friendly, natural smile
+- Background: Clean white or light gray studio background
+- Lighting: Soft professional studio lighting with natural shadows
+- Setting: Professional fashion photography setup
 
-Product details to preserve:
-- ${prompt || 'All visible details, colors, textures, and design elements'}
+PHOTOGRAPHY QUALITY:
+- Style: High-end e-commerce product photography
+- Quality: Ultra-high resolution, sharp focus
+- Color accuracy: True to product colors
+- Lighting: Soft, diffused natural light
+- Composition: Medium shot showing upper body
+- Professional commercial photography standard
 
-Be extremely descriptive about colors, materials, fit, and how the clothing would interact with the person's body and the lighting in the scene.`;
+${prompt ? `\nAdditional instructions: ${prompt}` : ''}
 
-      // Construir content multimodal
-      content = [
-        {
-          type: 'text',
-          text: finalPrompt
-        },
-        {
-          type: 'image_url',
-          image_url: { url: userPhoto }
-        },
-        {
-          type: 'image_url',
-          image_url: { url: productImage }
-        }
-      ];
-      
-      console.log('📝 Using EDIT mode with gemini-2.5-flash + multimodal input');
+Create the image as if this is a professional product photo for an online store, showing how the sweater looks when worn naturally.`;
+
+      console.log('📝 Using DESCRIPTIVE GENERATION approach');
     } else {
-      // MODO GERAÇÃO: usar image generation model
-      modelToUse = 'google/gemini-2.5-flash-image-preview';
-      finalPrompt = prompt || 'Generate a professional product image';
-      content = finalPrompt; // Apenas texto
-      
-      console.log('📝 Using GENERATION mode with flash-image-preview + text-only');
+      finalPrompt = prompt || 'Generate a professional product image of a blue knit sweater on a clean background';
+      console.log('📝 Using simple generation');
     }
 
-    console.log('📦 Model:', modelToUse);
-    console.log('📦 Content type:', typeof content === 'string' ? 'text-only' : 'multimodal array');
+    console.log('📝 Final prompt length:', finalPrompt.length);
 
+    // Fazer chamada para Lovable AI - APENAS COM TEXTO
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -88,14 +79,14 @@ Be extremely descriptive about colors, materials, fit, and how the clothing woul
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: modelToUse,
+        model: 'google/gemini-2.5-flash-image-preview',
         messages: [
           {
             role: 'user',
-            content: content
+            content: finalPrompt
           }
         ],
-        modalities: modelToUse.includes('image-preview') ? ['image', 'text'] : undefined,
+        modalities: ['image', 'text'],
         temperature: 0.7,
       }),
     });
