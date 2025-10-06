@@ -608,13 +608,31 @@
     generateImage: async function(userPhotoBase64) {
       console.log('Calling API:', this.config.apiEndpoint);
       
+      // Converter a imagem do produto para base64
+      let productImageBase64 = this.productImage;
+      if (this.productImage && !this.productImage.startsWith('data:')) {
+        try {
+          const response = await fetch(this.productImage);
+          const blob = await response.blob();
+          productImageBase64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+          console.log('Product image converted to base64');
+        } catch (e) {
+          console.error('Failed to convert product image to base64:', e);
+        }
+      }
+      
       const response = await fetch(this.config.apiEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          productImage: this.productImage,
+          productImage: productImageBase64,
           userPhoto: userPhotoBase64,
           prompt: this.config.customPrompt || 'Apply the product naturally on the person'
         })
