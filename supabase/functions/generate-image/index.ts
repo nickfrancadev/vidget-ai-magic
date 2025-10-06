@@ -24,47 +24,15 @@ serve(async (req) => {
     console.log('Has user photo:', !!userPhoto);
     console.log('Category:', category);
 
-    // Preparar o prompt de texto
-    const textPrompt = userPhoto && productImage
-      ? `Apply this blue knit sweater naturally on the person in the photo. Maintain their exact pose, facial features, background, and body position. The sweater should look realistic with proper lighting, shadows, and fabric texture that matches the scene. Keep the same image quality and resolution as the original photo. ${prompt || ''}`
-      : prompt || 'Generate a professional product image of a blue knit sweater';
+    // USAR MESMA ESTRATÉGIA DA HOME: prompt textual simples
+    const finalPrompt = userPhoto && productImage
+      ? `Replace the clothing item on the person with the product shown in the reference image. ${prompt || 'Maintain photorealistic quality and natural appearance.'}`
+      : prompt || 'Generate a professional product image';
 
-    console.log('📝 Prompt de texto:', textPrompt.substring(0, 150) + '...');
+    console.log('📝 Prompt final:', finalPrompt);
 
-    // Construir array multimodal de content
-    const content: any[] = [
-      {
-        type: 'text',
-        text: textPrompt
-      }
-    ];
-
-    // Adicionar foto do usuário se disponível
-    if (userPhoto) {
-      content.push({
-        type: 'image_url',
-        image_url: {
-          url: userPhoto
-        }
-      });
-      console.log('📷 Foto do usuário adicionada ao content');
-    }
-
-    // Adicionar imagem do produto se disponível
-    if (productImage) {
-      content.push({
-        type: 'image_url',
-        image_url: {
-          url: productImage
-        }
-      });
-      console.log('👕 Imagem do produto adicionada ao content');
-    }
-
-    console.log('📦 Total de itens no content array:', content.length);
-    console.log('📦 Tipos no content:', content.map(c => c.type).join(', '));
-
-    // Fazer chamada para Lovable AI com conteúdo multimodal
+    // IMPORTANTE: NÃO ENVIAR IMAGENS - apenas texto
+    // O modelo google/gemini-2.5-flash-image-preview GERA imagens, não edita
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -72,11 +40,11 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.0-flash-exp',
+        model: 'google/gemini-2.5-flash-image-preview',
         messages: [
           {
             role: 'user',
-            content: content
+            content: finalPrompt  // APENAS TEXTO
           }
         ],
         modalities: ['image', 'text'],
