@@ -654,7 +654,10 @@
       document.getElementById('vidget-loading-state').style.display = 'none';
       document.getElementById('vidget-result-state').style.display = 'block';
       document.getElementById('vidget-error-state').style.display = 'none';
-      document.getElementById('vidget-result-img').src = result.url || result.imageUrl;
+      
+      // Aceitar tanto result.url quanto result.data.url
+      const imageUrl = result.url || (result.data && result.data.url) || result.imageUrl;
+      document.getElementById('vidget-result-img').src = imageUrl;
       this.currentResult = result;
       
       // Scroll para o topo do resultado
@@ -685,10 +688,13 @@
     downloadResult: function() {
       if (!this.currentResult) return;
       
-      const imageUrl = this.currentResult.url || this.currentResult.imageUrl;
+      const imageUrl = this.currentResult.url || 
+                       (this.currentResult.data && this.currentResult.data.url) || 
+                       this.currentResult.imageUrl;
+      
       const link = document.createElement('a');
       link.href = imageUrl;
-      link.download = 'vidget-try-on.png';
+      link.download = 'vidget-virtual-try-on.png';
       link.target = '_blank';
       document.body.appendChild(link);
       link.click();
