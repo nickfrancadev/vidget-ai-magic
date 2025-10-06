@@ -24,15 +24,47 @@ serve(async (req) => {
     console.log('Has user photo:', !!userPhoto);
     console.log('Category:', category);
 
-    // USAR MESMA ESTRATÉGIA DA HOME: prompt textual simples
-    const finalPrompt = userPhoto && productImage
-      ? `Replace the clothing item on the person with the product shown in the reference image. ${prompt || 'Maintain photorealistic quality and natural appearance.'}`
+    // Preparar prompt baseado na situação
+    const textPrompt = userPhoto && productImage
+      ? `${prompt || 'Replace the clothing item on the person with the product shown in the reference image. Maintain photorealistic quality, natural appearance, exact pose, facial features, background, and body position.'}`
       : prompt || 'Generate a professional product image';
 
-    console.log('📝 Prompt final:', finalPrompt);
+    console.log('📝 Prompt de texto:', textPrompt);
 
-    // IMPORTANTE: NÃO ENVIAR IMAGENS - apenas texto
-    // O modelo google/gemini-2.5-flash-image-preview GERA imagens, não edita
+    // Construir content array multimodal
+    const content: any[] = [
+      {
+        type: 'text',
+        text: textPrompt
+      }
+    ];
+
+    // Adicionar foto do usuário se disponível
+    if (userPhoto) {
+      content.push({
+        type: 'image_url',
+        image_url: {
+          url: userPhoto // Já vem em base64 do frontend
+        }
+      });
+      console.log('📷 User photo added to content');
+    }
+
+    // Adicionar imagem do produto se disponível
+    if (productImage) {
+      content.push({
+        type: 'image_url',
+        image_url: {
+          url: productImage // Já vem em base64 do frontend
+        }
+      });
+      console.log('👕 Product image added to content');
+    }
+
+    console.log('📦 Total items in content:', content.length);
+    console.log('📦 Content types:', content.map(c => c.type).join(', '));
+
+    // Chamar Lovable AI com conteúdo multimodal
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -44,7 +76,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'user',
-            content: finalPrompt  // APENAS TEXTO
+            content: content // Array multimodal com texto + imagens
           }
         ],
         modalities: ['image', 'text'],
