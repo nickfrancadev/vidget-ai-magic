@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Floral Dress - Vidget Fashion Store</title>
+  <title>Blusa em Tricot Lecy Azul - Vidget Fashion Store</title>
   <style>
     * {
       margin: 0;
@@ -38,11 +38,8 @@
     }
 
     .logo {
-      font-size: 22px;
-      font-weight: 700;
-      color: #38a169;
-      text-decoration: none;
-      letter-spacing: 0.5px;
+      height: 32px;
+      width: auto;
     }
 
     .nav {
@@ -61,11 +58,11 @@
     }
 
     .nav a:hover {
-      color: #38a169;
+      color: #445EDF;
     }
 
     .nav a.active {
-      color: #38a169;
+      color: #445EDF;
     }
 
     .nav a.active::after {
@@ -75,7 +72,7 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: #38a169;
+      background: #445EDF;
     }
 
     .header-icons {
@@ -94,7 +91,7 @@
     }
 
     .icon-btn:hover {
-      color: #38a169;
+      color: #445EDF;
     }
 
     /* Breadcrumb */
@@ -167,11 +164,11 @@
     }
 
     .thumbnail:hover {
-      border-color: #38a169;
+      border-color: #445EDF;
     }
 
     .thumbnail.active {
-      border-color: #38a169;
+      border-color: #445EDF;
     }
 
     /* Product Info */
@@ -331,14 +328,14 @@
     }
 
     .btn-primary {
-      background: #38a169;
+      background: #445EDF;
       color: white;
     }
 
     .btn-primary:hover {
-      background: #2f855a;
+      background: #3347c4;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(56, 161, 105, 0.3);
+      box-shadow: 0 4px 12px rgba(68, 94, 223, 0.3);
     }
 
     .btn-secondary {
@@ -443,30 +440,30 @@
   <!-- Header -->
   <header class="header">
     <div class="header-container">
-      <a href="/" class="logo">Vidget</a>
+      <img src="/vidget-logo.svg" alt="Vidget" class="logo" />
       <nav class="nav">
-        <a href="/">Home</a>
-        <a href="/shop" class="active">Shop</a>
-        <a href="/about">About</a>
-        <a href="/contact">Contact</a>
+        <a href="/">Início</a>
+        <a href="/loja" class="active">Loja</a>
+        <a href="/sobre">Sobre</a>
+        <a href="/contato">Contato</a>
       </nav>
       <div class="header-icons">
-        <button class="icon-btn" aria-label="Search">🔍</button>
-        <button class="icon-btn" aria-label="Wishlist">🤍</button>
-        <button class="icon-btn" aria-label="Cart">🛒</button>
+        <button class="icon-btn" aria-label="Buscar">🔍</button>
+        <button class="icon-btn" aria-label="Favoritos">🤍</button>
+        <button class="icon-btn" aria-label="Carrinho">🛒</button>
       </div>
     </div>
   </header>
 
   <!-- Breadcrumb -->
   <div class="breadcrumb">
-    <a href="/">Home</a>
+    <a href="/">Início</a>
     <span>/</span>
-    <a href="/shop">Shop</a>
+    <a href="/loja">Loja</a>
     <span>/</span>
-    <a href="/dresses">Dresses</a>
+    <a href="/blusas">Blusas</a>
     <span>/</span>
-    <span>Floral Dress</span>
+    <span>Blusa em Tricot Lecy Azul</span>
   </div>
 
   <!-- Main Content -->
@@ -475,96 +472,86 @@
       <!-- Product Images -->
       <div class="product-images">
         <img 
-          src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop" 
-          alt="Floral Dress"
+          src="/images/blusa-azul-1.webp" 
+          alt="Blusa em Tricot Lecy Azul"
           class="main-image"
           id="mainImage"
           data-product-image
         />
         <div class="thumbnail-grid">
           <img 
-            src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&auto=format&fit=crop" 
-            alt="Floral Dress View 1"
+            src="/images/blusa-azul-1.webp" 
+            alt="Blusa em Tricot Lecy Azul - Vista 1"
             class="thumbnail active"
-            onclick="changeImage(this.src.replace('w=200', 'w=800'))"
+            onclick="changeImage('/images/blusa-azul-1.webp')"
           />
           <img 
-            src="https://images.unsplash.com/photo-1572804013427-4d7ca7268217?w=200&auto=format&fit=crop" 
-            alt="Floral Dress View 2"
+            src="/images/blusa-azul-2.webp" 
+            alt="Blusa em Tricot Lecy Azul - Vista 2"
             class="thumbnail"
-            onclick="changeImage(this.src.replace('w=200', 'w=800'))"
-          />
-          <img 
-            src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=200&auto=format&fit=crop" 
-            alt="Floral Dress View 3"
-            class="thumbnail"
-            onclick="changeImage(this.src.replace('w=200', 'w=800'))"
-          />
-          <img 
-            src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=200&auto=format&fit=crop" 
-            alt="Floral Dress View 4"
-            class="thumbnail"
-            onclick="changeImage(this.src.replace('w=200', 'w=800'))"
+            onclick="changeImage('/images/blusa-azul-2.webp')"
           />
         </div>
       </div>
 
       <!-- Product Info -->
       <div class="product-info">
-        <h1 class="product-title">Elegant Floral Midi Dress</h1>
+        <h1 class="product-title">Blusa em Tricot Lecy Azul</h1>
         
         <p class="product-description">
-          A beautiful midi dress featuring a delicate floral pattern. Perfect for special occasions, 
-          this dress combines elegance with comfort in a lightweight, flowing fabric.
+          Uma linda blusa em tricot com detalhes em babados nas mangas. Perfeita para o dia a dia, 
+          combina elegância e conforto em um tecido macio e de qualidade.
         </p>
 
         <div class="product-meta">
           <div class="rating">
             <span class="stars">⭐ 4.9</span>
-            <span class="reviews">(225 reviews)</span>
+            <span class="reviews">(225 avaliações)</span>
           </div>
-          <span class="sold">• 5K+ Sold</span>
+          <span class="sold">• 5K+ Vendidos</span>
         </div>
 
         <div class="price-container">
-          <span class="price-current">$122.00</span>
-          <span class="price-original">$156.00</span>
+          <span class="price-current">R$ 122,00</span>
+          <span class="price-original">R$ 156,00</span>
         </div>
 
         <div class="separator"></div>
 
         <!-- Color Selector -->
         <div class="selector-group">
-          <label class="selector-label">Color: Floral Pink</label>
+          <label class="selector-label">Cor: Azul Claro</label>
           <div class="color-options">
             <div 
               class="color-swatch selected" 
-              style="background: linear-gradient(135deg, #ffc6d9 0%, #ffb3d1 100%);"
+              style="background: #8FC5E8;"
               onclick="selectColor(this)"
+              title="Azul Claro"
             ></div>
             <div 
               class="color-swatch" 
-              style="background: linear-gradient(135deg, #a8dadc 0%, #90d5d8 100%);"
+              style="background: #FFC0CB;"
               onclick="selectColor(this)"
+              title="Rosa"
             ></div>
             <div 
               class="color-swatch" 
-              style="background: linear-gradient(135deg, #e9c46a 0%, #e5ba56 100%);"
+              style="background: #E5E5E5;"
               onclick="selectColor(this)"
+              title="Branco"
             ></div>
           </div>
         </div>
 
         <!-- Size Selector -->
         <div class="selector-group">
-          <label class="selector-label">Size: Small</label>
+          <label class="selector-label">Tamanho: P</label>
           <div class="size-options">
-            <button class="size-option" onclick="selectSize(this)">XS</button>
-            <button class="size-option selected" onclick="selectSize(this)">S</button>
+            <button class="size-option" onclick="selectSize(this)">PP</button>
+            <button class="size-option selected" onclick="selectSize(this)">P</button>
             <button class="size-option" onclick="selectSize(this)">M</button>
-            <button class="size-option" onclick="selectSize(this)">L</button>
-            <button class="size-option" onclick="selectSize(this)">XL</button>
-            <button class="size-option" onclick="selectSize(this)">XXL</button>
+            <button class="size-option" onclick="selectSize(this)">G</button>
+            <button class="size-option" onclick="selectSize(this)">GG</button>
           </div>
         </div>
 
@@ -572,8 +559,8 @@
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <button class="btn btn-primary">+ Add to Cart</button>
-          <button class="btn btn-secondary">Buy this Item</button>
+          <button class="btn btn-primary">+ Adicionar ao Carrinho</button>
+          <button class="btn btn-secondary">Comprar Agora</button>
         </div>
 
         <!-- Additional Actions -->
@@ -584,30 +571,30 @@
           </a>
           <a href="#" class="action-link">
             <span>🤍</span>
-            <span>Wishlist</span>
+            <span>Favoritos</span>
           </a>
           <a href="#" class="action-link">
             <span>↗</span>
-            <span>Share</span>
+            <span>Compartilhar</span>
           </a>
         </div>
 
         <!-- Product Details -->
         <div class="product-details">
-          <h3 class="details-title">Product Details</h3>
+          <h3 class="details-title">Detalhes do Produto</h3>
           <div class="details-text">
-            This elegant floral midi dress features a flattering silhouette with a fitted bodice 
-            and flowing skirt. Made from premium quality fabric with excellent breathability. 
-            The delicate floral print adds a touch of femininity, making it perfect for garden 
-            parties, summer weddings, or any special occasion.
+            Esta elegante blusa em tricot apresenta uma silhueta confortável com detalhes 
+            charmosos em babados nas mangas. Confeccionada em tecido de tricot de alta qualidade 
+            com excelente respirabilidade. Os delicados babados adicionam um toque de feminilidade, 
+            tornando-a perfeita para o dia a dia, trabalho ou ocasiões especiais.
             <br><br>
-            <strong>Features:</strong>
+            <strong>Características:</strong>
             <ul style="margin-top: 8px; padding-left: 20px;">
-              <li>Premium lightweight fabric</li>
-              <li>Delicate floral pattern</li>
-              <li>Midi length for elegant coverage</li>
-              <li>Comfortable fit with stretch</li>
-              <li>Machine washable</li>
+              <li>Tecido em tricot de alta qualidade</li>
+              <li>Detalhes em babados nas mangas e barra</li>
+              <li>Modelagem confortável e versátil</li>
+              <li>Cor azul claro sofisticada</li>
+              <li>Pode ser lavada à máquina</li>
             </ul>
           </div>
         </div>
@@ -623,14 +610,14 @@
       window.VidgetWidget.init({
         autoDetectProduct: true,
         position: 'bottom-right',
-        primaryColor: '#38a169',
-        buttonText: 'See it on you',
+        primaryColor: '#445EDF',
+        buttonText: 'Veja como fica em você',
         buttonIcon: '✨',
         onSuccess: (result) => {
-          console.log('✅ Image generated successfully!', result);
+          console.log('✅ Imagem gerada com sucesso!', result);
         },
         onError: (error) => {
-          console.error('❌ Error generating image:', error);
+          console.error('❌ Erro ao gerar imagem:', error);
         }
       });
     }
@@ -640,7 +627,7 @@
       document.getElementById('mainImage').src = src;
       document.querySelectorAll('.thumbnail').forEach(thumb => {
         thumb.classList.remove('active');
-        if (thumb.src === src.replace('w=800', 'w=200')) {
+        if (thumb.src.includes(src)) {
           thumb.classList.add('active');
         }
       });

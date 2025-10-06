@@ -199,17 +199,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-ai rounded-lg flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold gradient-text">
-                  Vidget AI Creator
-                </h1>
-                <p className="text-xs text-text-muted">
-                  Gerador de conteúdo com IA
-                </p>
-              </div>
+              <img src="/vidget-logo.svg" alt="Vidget" className="h-8 w-auto" />
             </div>
             
             <div className="flex items-center gap-4">

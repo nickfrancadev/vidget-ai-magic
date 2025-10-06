@@ -63,7 +63,7 @@ const Demo = () => {
       }}>
         <header style={{ textAlign: 'center', marginBottom: '40px' }}>
           <h1 style={{ fontSize: '48px', color: '#1f2937', marginBottom: '16px' }}>
-            ✨ Vidget Widget Demo
+            ✨ Demonstração do Widget Vidget
           </h1>
           <p style={{ fontSize: '20px', color: '#6b7280' }}>
             Experimente produtos virtualmente em você
@@ -225,7 +225,7 @@ const Demo = () => {
           marginTop: '40px'
         }}>
           <h2 style={{ color: '#0369a1', marginBottom: '16px' }}>
-            📸 Como usar o Vidget Widget
+            📸 Como usar o Widget Vidget
           </h2>
           <ol style={{ marginLeft: '20px', color: '#075985' }}>
             <li style={{ marginBottom: '8px', lineHeight: 1.6 }}>

@@ -446,22 +446,22 @@
       chatPanel.id = 'vidget-chat-panel';
       chatPanel.innerHTML = `
         <div class="vidget-chat-header">
-          <h2 class="vidget-chat-title">Try it on virtually</h2>
-          <button class="vidget-close" aria-label="Close">×</button>
+          <h2 class="vidget-chat-title">Experimente virtualmente</h2>
+          <button class="vidget-close" aria-label="Fechar">×</button>
         </div>
         
         <div class="vidget-chat-body">
           <!-- Estado 1: Upload -->
           <div id="vidget-upload-state" class="vidget-upload-state">
             <div class="vidget-upload-icon">📸</div>
-            <div class="vidget-upload-title">Upload your photo</div>
-            <div class="vidget-upload-subtitle">See how this product looks on you</div>
+            <div class="vidget-upload-title">Envie sua foto</div>
+            <div class="vidget-upload-subtitle">Veja como este produto fica em você</div>
             
             <div class="vidget-upload-area">
               <input type="file" id="vidget-file-input" accept="image/jpeg,image/jpg,image/png,image/heic" />
               <label for="vidget-file-input">
-                <div class="vidget-upload-button">Choose Photo</div>
-                <div class="vidget-upload-formats">Accepted formats: JPG, PNG, HEIC</div>
+                <div class="vidget-upload-button">Escolher Foto</div>
+                <div class="vidget-upload-formats">Formatos aceitos: JPG, PNG, HEIC</div>
               </label>
             </div>
           </div>
@@ -469,7 +469,7 @@
           <!-- Estado 2: Loading -->
           <div id="vidget-loading-state" class="vidget-loading-state" style="display:none">
             <div class="vidget-spinner"></div>
-            <div class="vidget-loading-text">Creating your personalized view...</div>
+            <div class="vidget-loading-text">Criando sua visualização personalizada...</div>
             <div class="vidget-progress-bar">
               <div class="vidget-progress-fill"></div>
             </div>
@@ -477,14 +477,14 @@
           
           <!-- Estado 3: Resultado -->
           <div id="vidget-result-state" class="vidget-result-state" style="display:none">
-            <img id="vidget-result-img" class="vidget-result-image" alt="Result" />
-            <div class="vidget-result-title">Here's how it looks on you!</div>
+            <img id="vidget-result-img" class="vidget-result-image" alt="Resultado" />
+            <div class="vidget-result-title">Veja como ficou em você!</div>
             <div class="vidget-result-actions">
               <button class="vidget-btn vidget-btn-primary" onclick="VidgetWidget.downloadResult()">
-                Download image
+                Baixar imagem
               </button>
               <button class="vidget-btn vidget-btn-secondary" onclick="VidgetWidget.reset()">
-                Try another photo
+                Tentar outra foto
               </button>
             </div>
           </div>
@@ -494,7 +494,7 @@
             <div class="vidget-error-icon">⚠️</div>
             <div id="vidget-error-message" class="vidget-error-message"></div>
             <button class="vidget-btn vidget-btn-secondary" onclick="VidgetWidget.reset()">
-              Try again
+              Tentar novamente
             </button>
           </div>
         </div>
