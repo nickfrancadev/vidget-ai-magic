@@ -1,236 +1,500 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demo - Vidget Widget</title>
+  <title>The Product - Becky's Wigs</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      color: #1a1a1a;
+      background: #ffffff;
+      line-height: 1.6;
     }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
+
+    /* Header */
+    .header {
+      border-bottom: 1px solid #e5e5e5;
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
       background: white;
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      z-index: 100;
     }
-    
-    header {
-      text-align: center;
-      margin-bottom: 40px;
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    
-    h1 {
-      font-size: 48px;
-      color: #1f2937;
-      margin-bottom: 16px;
-    }
-    
-    .subtitle {
+
+    .logo {
       font-size: 20px;
-      color: #6b7280;
+      font-weight: 700;
+      color: #000;
+      text-decoration: none;
+      letter-spacing: 1px;
     }
-    
+
+    .nav {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav a {
+      color: #1a1a1a;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav a:hover {
+      color: #667eea;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 20px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #1a1a1a;
+      transition: color 0.2s;
+    }
+
+    .icon-btn:hover {
+      color: #667eea;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 32px;
+    }
+
+    .breadcrumb a {
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover {
+      color: #000;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* Product Grid */
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 30px;
-      margin-top: 40px;
+      grid-template-columns: 60% 40%;
+      gap: 60px;
+      align-items: start;
     }
-    
-    .product-card {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
+
+    /* Product Image */
+    .product-image-container {
+      position: sticky;
+      top: 100px;
     }
-    
-    .product-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    
+
     .product-image {
       width: 100%;
-      height: 400px;
-      overflow: hidden;
-      background: #f9fafb;
-    }
-    
-    .product-image img {
-      width: 100%;
-      height: 100%;
+      aspect-ratio: 3/4;
       object-fit: cover;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
     }
-    
+
+    /* Product Info */
     .product-info {
-      padding: 20px;
+      padding: 20px 0;
     }
-    
-    .product-name {
-      font-size: 24px;
-      font-weight: 600;
-      color: #1f2937;
+
+    .brand {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: #666;
+      text-transform: uppercase;
       margin-bottom: 8px;
     }
-    
-    .product-price {
+
+    .product-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .price-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .price-original {
+      font-size: 16px;
+      color: #999;
+      text-decoration: line-through;
+    }
+
+    .price-current {
       font-size: 28px;
       font-weight: 700;
-      color: #667eea;
-      margin-bottom: 16px;
+      color: #000;
     }
-    
-    .product-description {
-      font-size: 14px;
-      color: #6b7280;
-      line-height: 1.6;
-    }
-    
-    .badge {
-      display: inline-block;
-      background: #10b981;
+
+    .badge-sale {
+      background: #ff4757;
       color: white;
-      padding: 6px 12px;
-      border-radius: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
-      margin-top: 12px;
+      text-transform: uppercase;
     }
-    
-    .instructions {
-      background: #f0f9ff;
-      border: 2px solid #0ea5e9;
-      border-radius: 12px;
-      padding: 24px;
-      margin-top: 40px;
+
+    .separator {
+      height: 1px;
+      background: #e5e5e5;
+      margin: 24px 0;
     }
-    
-    .instructions h2 {
-      color: #0369a1;
-      margin-bottom: 16px;
+
+    /* Color Selector */
+    .selector-group {
+      margin-bottom: 24px;
     }
-    
-    .instructions ol {
-      margin-left: 20px;
-      color: #075985;
+
+    .selector-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 12px;
+      display: block;
     }
-    
-    .instructions li {
-      margin-bottom: 8px;
-      line-height: 1.6;
+
+    .color-options {
+      display: flex;
+      gap: 12px;
+    }
+
+    .color-option {
+      padding: 8px 20px;
+      border: 2px solid #e5e5e5;
+      border-radius: 20px;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .color-option:hover {
+      border-color: #999;
+    }
+
+    .color-option.selected {
+      border-color: #000;
+      border-width: 3px;
+      font-weight: 600;
+    }
+
+    /* Quantity */
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .quantity-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #e5e5e5;
+      background: white;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quantity-btn:hover {
+      border-color: #000;
+    }
+
+    .quantity-value {
+      width: 60px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      padding: 16px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-outline {
+      background: white;
+      color: #000;
+      border: 2px solid #000;
+    }
+
+    .btn-outline:hover {
+      background: #000;
+      color: white;
+    }
+
+    .btn-primary {
+      background: #000;
+      color: white;
+      border: 2px solid #000;
+    }
+
+    .btn-primary:hover {
+      background: #333;
+      border-color: #333;
+    }
+
+    /* Description */
+    .product-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    /* Share Button */
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: 1px solid #e5e5e5;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #666;
+      transition: all 0.2s;
+    }
+
+    .share-btn:hover {
+      border-color: #000;
+      color: #000;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .product-image-container {
+        position: static;
+      }
+
+      .header-container {
+        padding: 0 20px;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .product-title {
+        font-size: 24px;
+      }
+
+      .price-current {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>✨ Vidget Widget Demo</h1>
-      <p class="subtitle">Experimente produtos virtualmente em você</p>
-    </header>
-    
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <a href="/" class="logo">BECKY'S WIGS</a>
+      <nav class="nav">
+        <a href="/">Home</a>
+        <a href="/catalog">Catalog</a>
+        <a href="/sizing">Sizing</a>
+        <a href="/tv">TV</a>
+      </nav>
+      <div class="header-icons">
+        <button class="icon-btn" aria-label="Search">🔍</button>
+        <button class="icon-btn" aria-label="Cart">🛒</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/">Home</a>
+      <span>/</span>
+      <a href="/catalog">Catalog</a>
+      <span>/</span>
+      <span>The Product</span>
+    </div>
+
+    <!-- Product Grid -->
     <div class="product-grid">
-      <div class="product-card">
-        <div class="product-image">
-          <img 
-            src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop" 
-            alt="Vestido Floral Elegante"
-            data-product-image
-          >
-        </div>
-        <div class="product-info">
-          <h3 class="product-name">Vestido Floral Elegante</h3>
-          <p class="product-price">R$ 299,90</p>
-          <p class="product-description">
-            Vestido midi com estampa floral delicada, perfeito para ocasiões especiais. 
-            Tecido leve e confortável com caimento elegante.
-          </p>
-          <span class="badge">✨ Experimente Virtual</span>
-        </div>
+      <!-- Product Image -->
+      <div class="product-image-container">
+        <img 
+          src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop" 
+          alt="The Product"
+          class="product-image"
+          data-product-image
+        />
       </div>
-      
-      <div class="product-card">
-        <div class="product-image">
-          <img 
-            src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800&auto=format&fit=crop" 
-            alt="Blusa Branca Premium"
-          >
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <div class="brand">Becky's Wigs</div>
+        <h1 class="product-title">The Product</h1>
+        
+        <div class="price-container">
+          <span class="price-original">$99.00 USD</span>
+          <span class="price-current">$69.00 USD</span>
+          <span class="badge-sale">Sale</span>
         </div>
-        <div class="product-info">
-          <h3 class="product-name">Blusa Branca Premium</h3>
-          <p class="product-price">R$ 189,90</p>
-          <p class="product-description">
-            Blusa social em tecido premium com acabamento impecável. 
-            Ideal para looks profissionais e elegantes.
-          </p>
-          <span class="badge">✨ Experimente Virtual</span>
+
+        <div class="separator"></div>
+
+        <!-- Color Selector -->
+        <div class="selector-group">
+          <label class="selector-label">Color</label>
+          <div class="color-options">
+            <button class="color-option selected">Beige</button>
+            <button class="color-option">Black</button>
+            <button class="color-option">Brown</button>
+          </div>
         </div>
-      </div>
-      
-      <div class="product-card">
-        <div class="product-image">
-          <img 
-            src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&auto=format&fit=crop" 
-            alt="Jaqueta Jeans Clássica"
-          >
+
+        <!-- Quantity -->
+        <div class="selector-group">
+          <label class="selector-label">Quantity</label>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity()">−</button>
+            <span class="quantity-value" id="quantity">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+          </div>
         </div>
-        <div class="product-info">
-          <h3 class="product-name">Jaqueta Jeans Clássica</h3>
-          <p class="product-price">R$ 249,90</p>
-          <p class="product-description">
-            Jaqueta jeans oversized com lavagem moderna. 
-            Peça versátil que combina com diversos estilos.
-          </p>
-          <span class="badge">✨ Experimente Virtual</span>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="btn btn-outline">Add to Cart</button>
+          <button class="btn btn-primary">Buy it Now</button>
         </div>
+
+        <div class="separator"></div>
+
+        <!-- Description -->
+        <div class="product-description">
+          This is subtitle for the product. Experience premium quality with our carefully crafted product. 
+          Perfect for everyday wear, combining style and comfort in one elegant piece.
+        </div>
+
+        <!-- Share -->
+        <button class="share-btn">
+          <span>↗</span>
+          <span>Share</span>
+        </button>
       </div>
     </div>
-    
-    <div class="instructions">
-      <h2>📸 Como usar o Vidget Widget</h2>
-      <ol>
-        <li>Clique no botão roxo "Veja como fica em você" no canto inferior direito</li>
-        <li>Faça upload de uma foto sua (de corpo inteiro ou busto, dependendo do produto)</li>
-        <li>Aguarde alguns segundos enquanto a IA aplica o produto na sua foto</li>
-        <li>Veja o resultado e baixe a imagem se desejar!</li>
-      </ol>
-      <p style="margin-top: 16px; color: #075985;">
-        <strong>Dica:</strong> Para melhores resultados, use fotos com boa iluminação e fundo neutro.
-      </p>
-    </div>
-  </div>
-  
-  <!-- Widget Vidget -->
+  </main>
+
+  <!-- Vidget Widget Script -->
   <script src="/vidget-widget.js"></script>
   <script>
-    // Inicializar o widget
-    VidgetWidget.init({
-      // Detecta automaticamente a primeira imagem de produto
-      autoDetectProduct: true,
-      position: 'bottom-right',
-      primaryColor: '#667eea',
-      buttonText: 'Veja como fica em você',
-      buttonIcon: '✨',
-      
-      // Callbacks opcionais
-      onSuccess: function(result) {
-        console.log('✅ Imagem gerada com sucesso!', result);
-      },
-      onError: function(error) {
-        console.error('❌ Erro ao gerar imagem:', error);
+    // Initialize Vidget Widget
+    if (window.VidgetWidget) {
+      window.VidgetWidget.init({
+        autoDetectProduct: true,
+        position: 'bottom-right',
+        primaryColor: '#667eea',
+        buttonText: 'See it on you',
+        buttonIcon: '✨',
+        onSuccess: (result) => {
+          console.log('✅ Image generated successfully!', result);
+        },
+        onError: (error) => {
+          console.error('❌ Error generating image:', error);
+        }
+      });
+    }
+
+    // Quantity Controls
+    let quantity = 1;
+    
+    function increaseQuantity() {
+      quantity++;
+      document.getElementById('quantity').textContent = quantity;
+    }
+    
+    function decreaseQuantity() {
+      if (quantity > 1) {
+        quantity--;
+        document.getElementById('quantity').textContent = quantity;
       }
+    }
+
+    // Color Selection
+    document.querySelectorAll('.color-option').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.color-option').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+      });
     });
   </script>
 </body>

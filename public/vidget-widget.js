@@ -100,106 +100,149 @@
     // Injetar CSS
     injectStyles: function() {
       const styles = `
+        /* Botão trigger flutuante */
         .vidget-trigger-btn {
           position: fixed;
-          ${this.config.position.includes('right') ? 'right: 20px;' : 'left: 20px;'}
+          right: 20px;
           bottom: 20px;
           background: linear-gradient(135deg, ${this.config.primaryColor} 0%, #764ba2 100%);
           color: white;
           border: none;
-          padding: 16px 24px;
+          padding: 14px 24px;
           border-radius: 50px;
           cursor: pointer;
-          font-size: 16px;
+          font-size: 15px;
           font-weight: 600;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+          box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
           z-index: 999998;
           display: flex;
           align-items: center;
           gap: 8px;
-          transition: all 0.3s ease;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+          letter-spacing: 0.3px;
         }
         
         .vidget-trigger-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
         }
         
-        .vidget-modal {
-          display: none;
+        /* Chat lateral container */
+        .vidget-chat-panel {
           position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 999999;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        .vidget-modal.active {
-          display: block;
-        }
-        
-        .vidget-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0,0,0,0.7);
-          backdrop-filter: blur(4px);
-        }
-        
-        .vidget-content {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          right: 20px;
+          bottom: 80px;
+          width: 420px;
+          max-height: 650px;
           background: white;
-          border-radius: 20px;
-          padding: 32px;
-          max-width: 500px;
-          width: 90%;
-          max-height: 90vh;
-          overflow-y: auto;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+          border-radius: 16px 16px 0 0;
+          box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+          z-index: 999999;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+          display: none;
+          flex-direction: column;
+          transform: translateX(100%);
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          overflow: hidden;
+        }
+        
+        .vidget-chat-panel.active {
+          display: flex;
+          transform: translateX(0);
+        }
+        
+        /* Header do chat */
+        .vidget-chat-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 20px 24px;
+          border-bottom: 1px solid #e5e7eb;
+          background: white;
+        }
+        
+        .vidget-chat-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #1f2937;
+          margin: 0;
         }
         
         .vidget-close {
-          position: absolute;
-          top: 16px;
-          right: 16px;
-          background: #f3f4f6;
+          background: transparent;
           border: none;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
           font-size: 20px;
+          color: #6b7280;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: background 0.2s;
+          transition: all 0.2s;
         }
         
         .vidget-close:hover {
-          background: #e5e7eb;
+          background: #f3f4f6;
+          color: #1f2937;
         }
         
-        .vidget-content h2 {
-          margin: 0 0 24px 0;
-          font-size: 24px;
+        /* Conteúdo do chat */
+        .vidget-chat-body {
+          flex: 1;
+          overflow-y: auto;
+          padding: 24px;
+          background: white;
+        }
+        
+        .vidget-chat-body::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .vidget-chat-body::-webkit-scrollbar-track {
+          background: #f9fafb;
+        }
+        
+        .vidget-chat-body::-webkit-scrollbar-thumb {
+          background: #d1d5db;
+          border-radius: 3px;
+        }
+        
+        /* Estado 1: Upload */
+        .vidget-upload-state {
+          text-align: center;
+          padding: 32px 0;
+        }
+        
+        .vidget-upload-icon {
+          font-size: 56px;
+          margin-bottom: 20px;
+          opacity: 0.9;
+        }
+        
+        .vidget-upload-title {
+          font-size: 18px;
+          font-weight: 600;
           color: #1f2937;
+          margin-bottom: 8px;
+        }
+        
+        .vidget-upload-subtitle {
+          font-size: 14px;
+          color: #6b7280;
+          margin-bottom: 24px;
+          line-height: 1.5;
         }
         
         .vidget-upload-area {
           border: 2px dashed #d1d5db;
           border-radius: 12px;
-          padding: 48px 24px;
-          text-align: center;
+          padding: 40px 24px;
           cursor: pointer;
           transition: all 0.3s;
+          background: #fafafa;
         }
         
         .vidget-upload-area:hover {
@@ -213,61 +256,113 @@
         
         .vidget-upload-area label {
           cursor: pointer;
-          font-size: 16px;
-          color: #6b7280;
           display: block;
         }
         
-        .vidget-upload-icon {
-          font-size: 48px;
-          margin-bottom: 16px;
+        .vidget-upload-button {
+          display: inline-block;
+          background: ${this.config.primaryColor};
+          color: white;
+          padding: 12px 32px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: opacity 0.2s;
         }
         
-        .vidget-loading {
+        .vidget-upload-button:hover {
+          opacity: 0.9;
+        }
+        
+        .vidget-upload-formats {
+          font-size: 12px;
+          color: #9ca3af;
+          margin-top: 12px;
+        }
+        
+        /* Estado 2: Loading */
+        .vidget-loading-state {
           text-align: center;
           padding: 48px 24px;
         }
         
         .vidget-spinner {
+          width: 56px;
+          height: 56px;
           border: 4px solid #f3f4f6;
-          border-top: 4px solid ${this.config.primaryColor};
+          border-top-color: ${this.config.primaryColor};
           border-radius: 50%;
-          width: 48px;
-          height: 48px;
           animation: vidget-spin 1s linear infinite;
-          margin: 0 auto 16px;
+          margin: 0 auto 24px;
         }
         
         @keyframes vidget-spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+          to { transform: rotate(360deg); }
         }
         
-        .vidget-result {
+        .vidget-loading-text {
+          font-size: 15px;
+          font-weight: 500;
+          color: #374151;
+          margin-bottom: 16px;
+        }
+        
+        .vidget-progress-bar {
+          width: 100%;
+          height: 6px;
+          background: #f3f4f6;
+          border-radius: 3px;
+          overflow: hidden;
+          margin-top: 16px;
+        }
+        
+        .vidget-progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, ${this.config.primaryColor}, #764ba2);
+          width: 0%;
+          animation: vidget-progress 2s ease-in-out infinite;
+        }
+        
+        @keyframes vidget-progress {
+          0%, 100% { width: 0%; }
+          50% { width: 70%; }
+        }
+        
+        /* Estado 3: Resultado */
+        .vidget-result-state {
           text-align: center;
         }
         
-        .vidget-result img {
-          max-width: 100%;
-          border-radius: 12px;
+        .vidget-result-image {
+          width: 100%;
+          border-radius: 8px;
+          margin-bottom: 16px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .vidget-result-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #1f2937;
           margin-bottom: 16px;
         }
         
         .vidget-result-actions {
           display: flex;
           gap: 12px;
-          justify-content: center;
-          flex-wrap: wrap;
         }
         
         .vidget-btn {
-          padding: 12px 24px;
+          flex: 1;
+          padding: 14px 24px;
           border-radius: 8px;
           border: none;
           font-size: 14px;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s;
+          font-family: inherit;
         }
         
         .vidget-btn-primary {
@@ -277,25 +372,54 @@
         
         .vidget-btn-primary:hover {
           opacity: 0.9;
+          transform: translateY(-1px);
         }
         
         .vidget-btn-secondary {
-          background: #f3f4f6;
+          background: white;
           color: #374151;
+          border: 2px solid #e5e7eb;
         }
         
         .vidget-btn-secondary:hover {
-          background: #e5e7eb;
+          border-color: #d1d5db;
+          background: #f9fafb;
         }
         
-        .vidget-error {
-          padding: 16px;
+        /* Estado de erro */
+        .vidget-error-state {
           text-align: center;
+          padding: 32px 24px;
+        }
+        
+        .vidget-error-icon {
+          font-size: 48px;
+          margin-bottom: 16px;
         }
         
         .vidget-error-message {
           color: #ef4444;
-          margin-bottom: 12px;
+          font-size: 14px;
+          margin-bottom: 20px;
+        }
+        
+        /* Mobile responsivo */
+        @media (max-width: 768px) {
+          .vidget-chat-panel {
+            width: 100%;
+            max-width: 100vw;
+            right: 0;
+            bottom: 0;
+            max-height: 85vh;
+            border-radius: 16px 16px 0 0;
+          }
+          
+          .vidget-trigger-btn {
+            right: 16px;
+            bottom: 16px;
+            padding: 12px 20px;
+            font-size: 14px;
+          }
         }
       `;
       
@@ -315,55 +439,68 @@
       document.body.appendChild(button);
     },
     
-    // Injetar modal
+    // Injetar painel de chat lateral
     injectModal: function() {
-      const modal = document.createElement('div');
-      modal.className = 'vidget-modal';
-      modal.id = 'vidget-modal';
-      modal.innerHTML = `
-        <div class="vidget-overlay"></div>
-        <div class="vidget-content">
-          <button class="vidget-close" aria-label="Fechar">×</button>
-          <h2>Veja como fica em você</h2>
-          
-          <div id="vidget-upload-area" class="vidget-upload-area">
-            <input type="file" id="vidget-file-input" accept="image/*,image/heic" />
-            <label for="vidget-file-input">
-              <div class="vidget-upload-icon">📸</div>
-              <div>Clique para fazer upload da sua foto</div>
-              <div style="font-size: 12px; margin-top: 8px; color: #9ca3af;">
-                JPG, PNG ou HEIC (máx. 10MB)
-              </div>
-            </label>
+      const chatPanel = document.createElement('div');
+      chatPanel.className = 'vidget-chat-panel';
+      chatPanel.id = 'vidget-chat-panel';
+      chatPanel.innerHTML = `
+        <div class="vidget-chat-header">
+          <h2 class="vidget-chat-title">Try it on virtually</h2>
+          <button class="vidget-close" aria-label="Close">×</button>
+        </div>
+        
+        <div class="vidget-chat-body">
+          <!-- Estado 1: Upload -->
+          <div id="vidget-upload-state" class="vidget-upload-state">
+            <div class="vidget-upload-icon">📸</div>
+            <div class="vidget-upload-title">Upload your photo</div>
+            <div class="vidget-upload-subtitle">See how this product looks on you</div>
+            
+            <div class="vidget-upload-area">
+              <input type="file" id="vidget-file-input" accept="image/jpeg,image/jpg,image/png,image/heic" />
+              <label for="vidget-file-input">
+                <div class="vidget-upload-button">Choose Photo</div>
+                <div class="vidget-upload-formats">Accepted formats: JPG, PNG, HEIC</div>
+              </label>
+            </div>
           </div>
           
-          <div id="vidget-loading" class="vidget-loading" style="display:none">
+          <!-- Estado 2: Loading -->
+          <div id="vidget-loading-state" class="vidget-loading-state" style="display:none">
             <div class="vidget-spinner"></div>
-            <div style="color: #6b7280;">Criando sua visualização personalizada...</div>
+            <div class="vidget-loading-text">Creating your personalized view...</div>
+            <div class="vidget-progress-bar">
+              <div class="vidget-progress-fill"></div>
+            </div>
           </div>
           
-          <div id="vidget-result" class="vidget-result" style="display:none">
-            <img id="vidget-result-img" alt="Resultado" />
+          <!-- Estado 3: Resultado -->
+          <div id="vidget-result-state" class="vidget-result-state" style="display:none">
+            <img id="vidget-result-img" class="vidget-result-image" alt="Result" />
+            <div class="vidget-result-title">Here's how it looks on you!</div>
             <div class="vidget-result-actions">
               <button class="vidget-btn vidget-btn-primary" onclick="VidgetWidget.downloadResult()">
-                Baixar Imagem
+                Download image
               </button>
               <button class="vidget-btn vidget-btn-secondary" onclick="VidgetWidget.reset()">
-                Nova Foto
+                Try another photo
               </button>
             </div>
           </div>
           
-          <div id="vidget-error" class="vidget-error" style="display:none">
+          <!-- Estado de Erro -->
+          <div id="vidget-error-state" class="vidget-error-state" style="display:none">
+            <div class="vidget-error-icon">⚠️</div>
             <div id="vidget-error-message" class="vidget-error-message"></div>
             <button class="vidget-btn vidget-btn-secondary" onclick="VidgetWidget.reset()">
-              Tentar Novamente
+              Try again
             </button>
           </div>
         </div>
       `;
       
-      document.body.appendChild(modal);
+      document.body.appendChild(chatPanel);
     },
     
     // Event listeners
@@ -375,12 +512,8 @@
         self.openModal();
       });
       
-      // Fechar modal
+      // Fechar chat
       document.querySelector('.vidget-close').addEventListener('click', function() {
-        self.closeModal();
-      });
-      
-      document.querySelector('.vidget-overlay').addEventListener('click', function() {
         self.closeModal();
       });
       
@@ -397,18 +530,23 @@
       });
     },
     
-    // Abrir modal
+    // Abrir chat
     openModal: function() {
-      document.getElementById('vidget-modal').classList.add('active');
+      const panel = document.getElementById('vidget-chat-panel');
+      panel.classList.add('active');
       this.isOpen = true;
-      document.body.style.overflow = 'hidden';
+      
+      // Se já tem resultado, mostrar
+      if (this.currentResult) {
+        this.showResult(this.currentResult);
+      }
     },
     
-    // Fechar modal
+    // Fechar chat
     closeModal: function() {
-      document.getElementById('vidget-modal').classList.remove('active');
+      const panel = document.getElementById('vidget-chat-panel');
+      panel.classList.remove('active');
       this.isOpen = false;
-      document.body.style.overflow = '';
     },
     
     // Upload de arquivo
@@ -504,35 +642,43 @@
     
     // Mostrar loading
     showLoading: function() {
-      document.getElementById('vidget-upload-area').style.display = 'none';
-      document.getElementById('vidget-loading').style.display = 'block';
-      document.getElementById('vidget-result').style.display = 'none';
-      document.getElementById('vidget-error').style.display = 'none';
+      document.getElementById('vidget-upload-state').style.display = 'none';
+      document.getElementById('vidget-loading-state').style.display = 'block';
+      document.getElementById('vidget-result-state').style.display = 'none';
+      document.getElementById('vidget-error-state').style.display = 'none';
     },
     
     // Mostrar resultado
     showResult: function(result) {
-      document.getElementById('vidget-loading').style.display = 'none';
-      document.getElementById('vidget-result').style.display = 'block';
+      document.getElementById('vidget-upload-state').style.display = 'none';
+      document.getElementById('vidget-loading-state').style.display = 'none';
+      document.getElementById('vidget-result-state').style.display = 'block';
+      document.getElementById('vidget-error-state').style.display = 'none';
       document.getElementById('vidget-result-img').src = result.url || result.imageUrl;
       this.currentResult = result;
+      
+      // Scroll para o topo do resultado
+      const chatBody = document.querySelector('.vidget-chat-body');
+      if (chatBody) chatBody.scrollTop = 0;
     },
     
     // Mostrar erro
     showError: function(message) {
-      document.getElementById('vidget-loading').style.display = 'none';
-      document.getElementById('vidget-upload-area').style.display = 'none';
-      document.getElementById('vidget-error').style.display = 'block';
+      document.getElementById('vidget-upload-state').style.display = 'none';
+      document.getElementById('vidget-loading-state').style.display = 'none';
+      document.getElementById('vidget-result-state').style.display = 'none';
+      document.getElementById('vidget-error-state').style.display = 'block';
       document.getElementById('vidget-error-message').textContent = message;
     },
     
     // Reset
     reset: function() {
-      document.getElementById('vidget-upload-area').style.display = 'block';
-      document.getElementById('vidget-loading').style.display = 'none';
-      document.getElementById('vidget-result').style.display = 'none';
-      document.getElementById('vidget-error').style.display = 'none';
+      document.getElementById('vidget-upload-state').style.display = 'block';
+      document.getElementById('vidget-loading-state').style.display = 'none';
+      document.getElementById('vidget-result-state').style.display = 'none';
+      document.getElementById('vidget-error-state').style.display = 'none';
       document.getElementById('vidget-file-input').value = '';
+      this.currentResult = null;
     },
     
     // Download resultado
