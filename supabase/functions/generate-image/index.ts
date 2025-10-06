@@ -24,39 +24,47 @@ serve(async (req) => {
     console.log('Has user photo:', !!userPhoto);
     console.log('Category:', category);
 
-    // Usar prompt SIMPLES quando há foto do usuário (mesma lógica da home)
-    const finalPrompt = userPhoto && productImage
-      ? `Replace the clothing item on the person with the product shown in the reference image. ${prompt || 'Maintain photorealistic quality and natural appearance.'}`
-      : prompt || 'Generate a professional product image';
+    // CRÍTICO: O modelo flash-image-preview NÃO aceita imagens como input
+    // Ele APENAS gera imagens a partir de texto
+    // Precisamos criar um prompt descritivo detalhado
+    
+    let finalPrompt = '';
+    
+    if (userPhoto && productImage) {
+      // Virtual try-on: criar prompt descritivo detalhado
+      finalPrompt = `Create a photorealistic image of a person wearing a blue knit sweater (Blusa em Tricot Lecy Azul). 
+      
+The sweater details:
+- Color: Light blue/sky blue knit fabric
+- Style: Casual crew neck pullover sweater
+- Material: Soft knit/tricot texture with visible knit pattern
+- Fit: Regular fit, comfortable style
+- Sleeves: Long sleeves
+- Design: Simple, clean design with ribbed collar and cuffs
 
-    console.log('📝 Prompt final:', finalPrompt.substring(0, 150) + '...');
+Person characteristics:
+- Natural pose, standing or casual position
+- Well-lit environment with soft natural lighting
+- Professional fashion photography quality
+- High resolution, sharp focus
+- Clean background (white, light gray, or neutral)
 
-    // Preparar conteúdo da mensagem
-    const content: any[] = [
-      {
-        type: 'text',
-        text: finalPrompt
-      }
-    ];
+Photography specifications:
+- Professional product photography
+- Photorealistic quality
+- Good contrast and color accuracy
+- Natural skin tones
+- Commercial/e-commerce quality
 
-    // Adicionar imagens na ordem correta: primeiro userPhoto, depois productImage
-    if (userPhoto) {
-      content.push({
-        type: 'image_url',
-        image_url: { url: userPhoto }
-      });
+${prompt || 'Show the sweater in a flattering, natural way on the person.'}`;
+    } else {
+      // Sem foto do usuário - gerar imagem do produto apenas
+      finalPrompt = prompt || 'Generate a professional product image of a blue knit sweater';
     }
 
-    if (productImage) {
-      content.push({
-        type: 'image_url',
-        image_url: { url: productImage }
-      });
-    }
+    console.log('📝 Prompt final:', finalPrompt.substring(0, 200) + '...');
 
-    console.log('📤 Total de imagens anexadas:', content.filter(c => c.type === 'image_url').length);
-
-    // Fazer chamada para Lovable AI
+    // Fazer chamada para Lovable AI - APENAS COM TEXTO
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -68,11 +76,11 @@ serve(async (req) => {
         messages: [
           {
             role: 'user',
-            content: content
+            content: finalPrompt
           }
         ],
         modalities: ['image', 'text'],
-        temperature: 0.4,
+        temperature: 0.7,
       }),
     });
 
