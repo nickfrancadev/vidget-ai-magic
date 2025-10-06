@@ -20,6 +20,12 @@ const Demo = () => {
     }
   }, []);
 
+  const handleTryVirtual = () => {
+    if (window.VidgetWidget) {
+      window.VidgetWidget.openModal();
+    }
+  };
+
   return (
     <div style={{
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -76,16 +82,23 @@ const Demo = () => {
                 Vestido midi com estampa floral delicada, perfeito para ocasiões especiais. 
                 Tecido leve e confortável com caimento elegante.
               </p>
-              <span style={{
-                display: 'inline-block',
-                background: '#10b981',
-                color: 'white',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                fontSize: '12px',
-                fontWeight: 600,
-                marginTop: '12px'
-              }}>
+              <span 
+                onClick={handleTryVirtual}
+                style={{
+                  display: 'inline-block',
+                  background: '#10b981',
+                  color: 'white',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  marginTop: '12px',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#059669'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#10b981'}
+              >
                 ✨ Experimente Virtual
               </span>
             </div>
@@ -115,16 +128,23 @@ const Demo = () => {
                 Blusa social em tecido premium com acabamento impecável. 
                 Ideal para looks profissionais e elegantes.
               </p>
-              <span style={{
-                display: 'inline-block',
-                background: '#10b981',
-                color: 'white',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                fontSize: '12px',
-                fontWeight: 600,
-                marginTop: '12px'
-              }}>
+              <span 
+                onClick={handleTryVirtual}
+                style={{
+                  display: 'inline-block',
+                  background: '#10b981',
+                  color: 'white',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  marginTop: '12px',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#059669'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#10b981'}
+              >
                 ✨ Experimente Virtual
               </span>
             </div>
@@ -154,16 +174,23 @@ const Demo = () => {
                 Jaqueta jeans oversized com lavagem moderna. 
                 Peça versátil que combina com diversos estilos.
               </p>
-              <span style={{
-                display: 'inline-block',
-                background: '#10b981',
-                color: 'white',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                fontSize: '12px',
-                fontWeight: 600,
-                marginTop: '12px'
-              }}>
+              <span 
+                onClick={handleTryVirtual}
+                style={{
+                  display: 'inline-block',
+                  background: '#10b981',
+                  color: 'white',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  marginTop: '12px',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#059669'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#10b981'}
+              >
                 ✨ Experimente Virtual
               </span>
             </div>
@@ -210,6 +237,7 @@ declare global {
   interface Window {
     VidgetWidget: {
       init: (config: any) => void;
+      openModal: () => void;
     };
   }
 }
