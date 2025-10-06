@@ -24,47 +24,63 @@ serve(async (req) => {
     console.log('Has user photo:', !!userPhoto);
     console.log('Category:', category);
 
-    // Preparar prompt baseado na situação
-    const textPrompt = userPhoto && productImage
-      ? `${prompt || 'Replace the clothing item on the person with the product shown in the reference image. Maintain photorealistic quality, natural appearance, exact pose, facial features, background, and body position.'}`
-      : prompt || 'Generate a professional product image';
+    // IMPORTANTE: google/gemini-2.5-flash-image-preview é para GERAR imagens, não EDITAR
+    // Quando temos userPhoto + productImage, precisamos usar o modelo padrão Gemini que aceita multimodal
+    
+    let finalPrompt: string;
+    let modelToUse: string;
+    let content: any;
 
-    console.log('📝 Prompt de texto:', textPrompt);
+    if (userPhoto && productImage) {
+      // MODO EDIÇÃO: usar gemini-2.5-flash que aceita imagens como input
+      modelToUse = 'google/gemini-2.5-flash';
+      finalPrompt = `You are an expert at virtual try-on and product visualization. 
 
-    // Construir content array multimodal
-    const content: any[] = [
-      {
-        type: 'text',
-        text: textPrompt
-      }
-    ];
+I will provide you with two images:
+1. A photo of a person
+2. A product image (clothing item)
 
-    // Adicionar foto do usuário se disponível
-    if (userPhoto) {
-      content.push({
-        type: 'image_url',
-        image_url: {
-          url: userPhoto // Já vem em base64 do frontend
+Your task: Describe in extreme detail how the product would look if the person was wearing it. Include:
+- Exact product colors, textures, patterns from the reference image
+- How it would fit on the person's body type
+- Natural lighting and shadows
+- Realistic fabric draping and movement
+- The person's exact pose, background, and facial features maintained
+
+Product details to preserve:
+- ${prompt || 'All visible details, colors, textures, and design elements'}
+
+Be extremely descriptive about colors, materials, fit, and how the clothing would interact with the person's body and the lighting in the scene.`;
+
+      // Construir content multimodal
+      content = [
+        {
+          type: 'text',
+          text: finalPrompt
+        },
+        {
+          type: 'image_url',
+          image_url: { url: userPhoto }
+        },
+        {
+          type: 'image_url',
+          image_url: { url: productImage }
         }
-      });
-      console.log('📷 User photo added to content');
+      ];
+      
+      console.log('📝 Using EDIT mode with gemini-2.5-flash + multimodal input');
+    } else {
+      // MODO GERAÇÃO: usar image generation model
+      modelToUse = 'google/gemini-2.5-flash-image-preview';
+      finalPrompt = prompt || 'Generate a professional product image';
+      content = finalPrompt; // Apenas texto
+      
+      console.log('📝 Using GENERATION mode with flash-image-preview + text-only');
     }
 
-    // Adicionar imagem do produto se disponível
-    if (productImage) {
-      content.push({
-        type: 'image_url',
-        image_url: {
-          url: productImage // Já vem em base64 do frontend
-        }
-      });
-      console.log('👕 Product image added to content');
-    }
+    console.log('📦 Model:', modelToUse);
+    console.log('📦 Content type:', typeof content === 'string' ? 'text-only' : 'multimodal array');
 
-    console.log('📦 Total items in content:', content.length);
-    console.log('📦 Content types:', content.map(c => c.type).join(', '));
-
-    // Chamar Lovable AI com conteúdo multimodal
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -72,14 +88,14 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
+        model: modelToUse,
         messages: [
           {
             role: 'user',
-            content: content // Array multimodal com texto + imagens
+            content: content
           }
         ],
-        modalities: ['image', 'text'],
+        modalities: modelToUse.includes('image-preview') ? ['image', 'text'] : undefined,
         temperature: 0.7,
       }),
     });
