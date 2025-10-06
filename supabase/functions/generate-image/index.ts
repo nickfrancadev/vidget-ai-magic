@@ -19,130 +19,139 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    console.log('🔍 DEBUGANDO GERAÇÃO DE ROUPA');
+    console.log('🔍 DEBUGANDO GERAÇÃO DE VIRTUAL TRY-ON');
     console.log('Categoria recebida:', category);
     console.log('Has product image:', !!productImage);
     console.log('Has user photo:', !!userPhoto);
-    console.log('Tamanho do prompt:', prompt?.length || 0);
-    console.log('Primeiros 500 chars do prompt:', prompt?.substring(0, 500));
 
-    // Determinar o modelo baseado na categoria
-    let modelToUse = 'google/gemini-2.5-flash-image-preview';
+    // Para virtual try-on, usamos uma abordagem em 2 etapas:
+    // 1. Analisar as imagens com Gemini Flash (multimodal)
+    // 2. Gerar a imagem final com Image Preview
     
-    // Testar modelo alternativo para roupas
-    if (category === 'roupas_superiores' || 
-        category === 'roupas_inferiores' || 
-        category?.includes('vestido') ||
-        category === 'Roupas') {
-      console.log('🎯 Detectado categoria de roupa, usando modelo alternativo');
-      modelToUse = 'google/gemini-2.0-flash-exp';
-    }
-    
-    console.log('📤 Modelo selecionado:', modelToUse);
-
-    // Se temos userPhoto, usar abordagem de EDIÇÃO de imagem
-    // em vez de geração, pois queremos editar a foto aplicando o produto
     if (userPhoto && productImage) {
-      console.log('🎨 Usando abordagem de EDIÇÃO com 2 imagens');
+      console.log('🎨 ETAPA 1: Analisando imagens com Gemini Flash');
       
-      // Para edição, enviamos a imagem do usuário como imagem base
-      // e incluímos a imagem do produto no prompt como referência
-      const editContent = [
-        {
-          type: 'text',
-          text: `CRITICAL EDITING TASK: Apply the clothing/accessory product from the second image onto THE SAME PERSON shown in the first image.
-
-CRITICAL RULES - MUST FOLLOW:
-1. SINGLE PERSON ONLY: Keep ONLY the person from the first image. DO NOT add, duplicate, or create any additional people.
-2. EXACT PERSON PRESERVATION: The person's face, body, pose, and position must remain EXACTLY as shown in the first image.
-3. PRODUCT APPLICATION: Replace ONLY the corresponding clothing item with the product from the second image.
-4. BACKGROUND PRESERVATION: Keep the entire background, environment, and all other elements from the first image unchanged.
-
-FORBIDDEN ACTIONS:
-❌ DO NOT add any extra people to the scene
-❌ DO NOT duplicate the person
-❌ DO NOT create a second person
-❌ DO NOT modify the person's face, hair, or body structure
-❌ DO NOT change the background or environment
-
-REQUIRED OUTPUT:
-✓ Same exact person from first image
-✓ Same pose and position
-✓ Same background and environment
-✓ Only the clothing item replaced with the product
-✓ Natural, photorealistic integration
-✓ Proper lighting and shadows matching the original scene
-
-${prompt || 'Apply the product naturally on the person.'}`
-        },
-        {
-          type: 'image_url',
-          image_url: {
-            url: userPhoto  // Foto do usuário é a base para edição
-          }
-        },
-        {
-          type: 'image_url',
-          image_url: {
-            url: productImage  // Produto como referência
-          }
-        }
-      ];
-
-      const editResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      // Primeiro, usar Gemini Flash para analisar as imagens e criar descrição detalhada
+      const analysisResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${LOVABLE_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: modelToUse,
+          model: 'google/gemini-2.5-flash',
           messages: [
             {
               role: 'user',
-              content: editContent
+              content: [
+                {
+                  type: 'text',
+                  text: `Analise estas duas imagens e crie uma descrição fotorrealista DETALHADA para gerar uma nova imagem.
+
+IMAGEM 1 (pessoa): Descreva em detalhes:
+- Características físicas da pessoa (tom de pele, tipo de corpo, postura)
+- Posição e pose exata
+- Expressão facial
+- Cabelo (cor, estilo, comprimento)
+- Ambiente e fundo (iluminação, localização, elementos ao redor)
+- Roupas atuais (para saber o que substituir)
+
+IMAGEM 2 (produto): Descreva em detalhes:
+- Tipo exato de roupa/acessório
+- Cor precisa
+- Textura e material
+- Padrões ou detalhes
+- Estilo e corte
+
+SAÍDA REQUERIDA:
+Crie um prompt de geração de imagem fotorrealista que combine a PESSOA da imagem 1 com o PRODUTO da imagem 2.
+O prompt deve ser extremamente detalhado, focando em:
+1. Manter a mesma pessoa, pose, expressão e fundo
+2. Substituir apenas a roupa pelo produto
+3. Iluminação natural e realista
+4. Qualidade fotográfica profissional
+
+Responda APENAS com o prompt de geração, sem explicações adicionais.`
+                },
+                {
+                  type: 'image_url',
+                  image_url: { url: userPhoto }
+                },
+                {
+                  type: 'image_url',
+                  image_url: { url: productImage }
+                }
+              ]
+            }
+          ],
+          temperature: 0.3,
+        }),
+      });
+
+      if (!analysisResponse.ok) {
+        const errorText = await analysisResponse.text();
+        console.error('❌ Analysis error:', analysisResponse.status, errorText);
+        throw new Error(`Erro na análise: ${analysisResponse.status}`);
+      }
+
+      const analysisData = await analysisResponse.json();
+      const generationPrompt = analysisData.choices?.[0]?.message?.content;
+
+      if (!generationPrompt) {
+        throw new Error('Não foi possível gerar descrição');
+      }
+
+      console.log('📝 Descrição gerada:', generationPrompt.substring(0, 200) + '...');
+      console.log('🎨 ETAPA 2: Gerando imagem final com Image Preview');
+
+      // Agora gerar a imagem usando o prompt detalhado
+      const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash-image-preview',
+          messages: [
+            {
+              role: 'user',
+              content: generationPrompt
             }
           ],
           modalities: ['image', 'text'],
           temperature: 0.4,
-          top_p: 0.8
         }),
       });
 
-      if (!editResponse.ok) {
-        const errorText = await editResponse.text();
-        console.error('❌ Lovable AI error:', editResponse.status, errorText);
+      if (!imageResponse.ok) {
+        const errorText = await imageResponse.text();
+        console.error('❌ Image generation error:', imageResponse.status, errorText);
         
-        if (editResponse.status === 429) {
-          throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+        if (imageResponse.status === 429) {
+          throw new Error('Limite de requisições excedido. Aguarde um momento e tente novamente.');
         }
-        if (editResponse.status === 402) {
-          throw new Error('Payment required. Please add credits to your workspace.');
+        if (imageResponse.status === 402) {
+          throw new Error('Pagamento necessário. Adicione créditos ao seu workspace.');
         }
         
-        throw new Error(`AI Gateway error: ${editResponse.status}`);
+        throw new Error(`Erro ao gerar imagem: ${imageResponse.status}`);
       }
 
-      const editData = await editResponse.json();
-      
-      console.log('📦 Edit Response type:', typeof editData);
-      console.log('📦 Edit Response keys:', Object.keys(editData));
-      console.log('📦 Edit Choices:', editData.choices?.length);
-      console.log('📦 Edit Images na resposta:', editData.choices?.[0]?.message?.images?.length);
-      console.log('✅ Image edited successfully');
+      const imageData = await imageResponse.json();
+      const generatedImageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
-      // Extract the image from the response
-      const editedImageUrl = editData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-
-      if (!editedImageUrl) {
-        throw new Error('No image data in edit response');
+      if (!generatedImageUrl) {
+        throw new Error('Nenhuma imagem foi gerada');
       }
+
+      console.log('✅ Imagem gerada com sucesso!');
 
       return new Response(
         JSON.stringify({
           success: true,
           data: {
-            url: editedImageUrl,
+            url: generatedImageUrl,
             type: 'image'
           }
         }),
@@ -152,25 +161,9 @@ ${prompt || 'Apply the product naturally on the person.'}`
       );
     }
 
-    // Fallback: geração normal se não tiver userPhoto
-    console.log('🎨 Usando geração de imagem simples (sem userPhoto)');
+    // Fallback: geração simples se não tiver userPhoto
+    console.log('🎨 Geração simples (sem virtual try-on)');
     
-    const content: any[] = [
-      {
-        type: 'text',
-        text: prompt
-      }
-    ];
-
-    if (productImage) {
-      content.push({
-        type: 'image_url',
-        image_url: {
-          url: productImage
-        }
-      });
-    }
-
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -178,46 +171,37 @@ ${prompt || 'Apply the product naturally on the person.'}`
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: modelToUse,
+        model: 'google/gemini-2.5-flash-image-preview',
         messages: [
           {
             role: 'user',
-            content: content
+            content: prompt || 'Generate a product image'
           }
         ],
         modalities: ['image', 'text'],
         temperature: 0.4,
-        top_p: 0.8
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Lovable AI error:', response.status, errorText);
+      console.error('❌ Generation error:', response.status, errorText);
       
       if (response.status === 429) {
-        throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+        throw new Error('Limite de requisições excedido. Aguarde um momento e tente novamente.');
       }
       if (response.status === 402) {
-        throw new Error('Payment required. Please add credits to your workspace.');
+        throw new Error('Pagamento necessário. Adicione créditos ao seu workspace.');
       }
       
-      throw new Error(`AI Gateway error: ${response.status}`);
+      throw new Error(`Erro ao gerar imagem: ${response.status}`);
     }
 
     const data = await response.json();
-    
-    console.log('📦 Response type:', typeof data);
-    console.log('📦 Response keys:', Object.keys(data));
-    console.log('📦 Choices:', data.choices?.length);
-    console.log('📦 Images na resposta:', data.choices?.[0]?.message?.images?.length);
-    console.log('✅ Image generated successfully');
-
-    // Extract the image from the response
     const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
     if (!imageUrl) {
-      throw new Error('No image data in response');
+      throw new Error('Nenhuma imagem foi gerada');
     }
 
     return new Response(
@@ -233,11 +217,11 @@ ${prompt || 'Apply the product naturally on the person.'}`
       }
     );
   } catch (error) {
-    console.error('Error in generate-image function:', error);
+    console.error('Erro na função generate-image:', error);
     return new Response(
       JSON.stringify({
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
       }),
       {
         status: 500,
