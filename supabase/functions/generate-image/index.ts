@@ -24,54 +24,47 @@ serve(async (req) => {
     console.log('Has user photo:', !!userPhoto);
     console.log('Category:', category);
 
-    // SOLUÇÃO DEFINITIVA: Usar apenas geração textual
-    // Gemini models via Lovable AI não suportam edição de imagens com base64
-    // A abordagem correta é gerar imagens do zero com prompts descritivos detalhados
-    
-    let finalPrompt = '';
-    
-    if (userPhoto && productImage) {
-      // Criar um prompt extremamente descritivo para gerar a cena
-      finalPrompt = `Create a photorealistic image of a person wearing a blue knit sweater similar to the style shown in typical fashion e-commerce photos.
+    // Preparar prompt baseado na situação
+    const textPrompt = userPhoto && productImage
+      ? `${prompt || 'Replace the clothing item on the person with the product shown in the reference image. Maintain photorealistic quality, natural appearance, exact pose, facial features, background, and body position.'}`
+      : prompt || 'Generate a professional product image';
 
-PRODUCT SPECIFICATIONS (Blue Knit Sweater):
-- Color: Light sky blue, soft pastel tone
-- Material: Soft knit/tricot fabric with visible knit texture pattern
-- Style: Casual crew neck pullover sweater
-- Design: Simple, clean design with ribbed collar and cuffs
-- Fit: Regular comfortable fit
-- Sleeves: Long sleeves
-- Details: Textured knit pattern throughout
+    console.log('📝 Prompt de texto:', textPrompt);
 
-PERSON & SCENE:
-- Gender: Female, average build
-- Pose: Natural standing pose, relaxed and confident
-- Expression: Friendly, natural smile
-- Background: Clean white or light gray studio background
-- Lighting: Soft professional studio lighting with natural shadows
-- Setting: Professional fashion photography setup
+    // Construir content array multimodal
+    const content: any[] = [
+      {
+        type: 'text',
+        text: textPrompt
+      }
+    ];
 
-PHOTOGRAPHY QUALITY:
-- Style: High-end e-commerce product photography
-- Quality: Ultra-high resolution, sharp focus
-- Color accuracy: True to product colors
-- Lighting: Soft, diffused natural light
-- Composition: Medium shot showing upper body
-- Professional commercial photography standard
-
-${prompt ? `\nAdditional instructions: ${prompt}` : ''}
-
-Create the image as if this is a professional product photo for an online store, showing how the sweater looks when worn naturally.`;
-
-      console.log('📝 Using DESCRIPTIVE GENERATION approach');
-    } else {
-      finalPrompt = prompt || 'Generate a professional product image of a blue knit sweater on a clean background';
-      console.log('📝 Using simple generation');
+    // Adicionar foto do usuário se disponível
+    if (userPhoto) {
+      content.push({
+        type: 'image_url',
+        image_url: {
+          url: userPhoto // Já vem em base64 do frontend
+        }
+      });
+      console.log('📷 User photo added to content');
     }
 
-    console.log('📝 Final prompt length:', finalPrompt.length);
+    // Adicionar imagem do produto se disponível
+    if (productImage) {
+      content.push({
+        type: 'image_url',
+        image_url: {
+          url: productImage // Já vem em base64 do frontend
+        }
+      });
+      console.log('👕 Product image added to content');
+    }
 
-    // Fazer chamada para Lovable AI - APENAS COM TEXTO
+    console.log('📦 Total items in content:', content.length);
+    console.log('📦 Content types:', content.map(c => c.type).join(', '));
+
+    // Chamar Lovable AI com conteúdo multimodal
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -83,7 +76,7 @@ Create the image as if this is a professional product photo for an online store,
         messages: [
           {
             role: 'user',
-            content: finalPrompt
+            content: content // Array multimodal com texto + imagens
           }
         ],
         modalities: ['image', 'text'],
