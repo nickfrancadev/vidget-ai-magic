@@ -2,27 +2,47 @@ import { useEffect } from 'react';
 
 const Demo = () => {
   useEffect(() => {
-    // Inicializar o widget quando a página carregar
-    if (window.VidgetWidget) {
-      window.VidgetWidget.init({
-        autoDetectProduct: true,
-        position: 'bottom-right',
-        primaryColor: '#667eea',
-        buttonText: 'Veja como fica em você',
-        buttonIcon: '✨',
-        onSuccess: (result: any) => {
-          console.log('✅ Imagem gerada com sucesso!', result);
-        },
-        onError: (error: any) => {
-          console.error('❌ Erro ao gerar imagem:', error);
-        }
-      });
-    }
+    // Carregar o script do widget
+    const script = document.createElement('script');
+    script.src = '/vidget-widget.js';
+    script.async = true;
+    script.onload = () => {
+      console.log('Widget script loaded');
+      // Inicializar o widget quando carregar
+      if (window.VidgetWidget) {
+        window.VidgetWidget.init({
+          autoDetectProduct: true,
+          position: 'bottom-right',
+          primaryColor: '#667eea',
+          buttonText: 'Veja como fica em você',
+          buttonIcon: '✨',
+          onSuccess: (result: any) => {
+            console.log('✅ Imagem gerada com sucesso!', result);
+          },
+          onError: (error: any) => {
+            console.error('❌ Erro ao gerar imagem:', error);
+          }
+        });
+      }
+    };
+    script.onerror = () => {
+      console.error('Failed to load widget script');
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      if (script.parentNode) {
+        document.body.removeChild(script);
+      }
+    };
   }, []);
 
   const handleTryVirtual = () => {
-    if (window.VidgetWidget) {
+    console.log('Button clicked, VidgetWidget:', window.VidgetWidget);
+    if (window.VidgetWidget && typeof window.VidgetWidget.openModal === 'function') {
       window.VidgetWidget.openModal();
+    } else {
+      console.error('VidgetWidget not available or openModal is not a function');
     }
   };
 

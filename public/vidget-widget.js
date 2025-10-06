@@ -26,8 +26,8 @@
       this.productImage = this.config.productImage || this.detectProductImage();
       
       if (!this.productImage) {
-        console.error('Vidget Widget: Não foi possível detectar imagem do produto');
-        return;
+        console.warn('Vidget Widget: Não foi possível detectar imagem do produto automaticamente');
+        // Não retornar - ainda podemos usar o widget manualmente
       }
       
       console.log('Vidget Widget initialized with product:', this.productImage);
@@ -37,6 +37,8 @@
       this.injectButton();
       this.injectModal();
       this.attachEventListeners();
+      
+      console.log('Vidget Widget ready!');
     },
     
     // Detectar automaticamente a imagem do produto
