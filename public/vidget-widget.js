@@ -380,6 +380,12 @@
         
         .vidget-result-actions {
           display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        
+        .vidget-result-actions-row {
+          display: flex;
           gap: 12px;
         }
         
@@ -510,12 +516,17 @@
             <img id="vidget-result-img" class="vidget-result-image" alt="Resultado" />
             <div class="vidget-result-title">Veja como ficou em você!</div>
             <div class="vidget-result-actions">
-              <button class="vidget-btn vidget-btn-primary" onclick="VidgetWidget.downloadResult()">
-                Baixar imagem
+              <button class="vidget-btn vidget-btn-primary" onclick="VidgetWidget.addToCart()" style="width: 100%;">
+                🛒 Adicionar ao Carrinho
               </button>
-              <button class="vidget-btn vidget-btn-secondary" onclick="VidgetWidget.reset()">
-                Tentar outra foto
-              </button>
+              <div class="vidget-result-actions-row">
+                <button class="vidget-btn vidget-btn-secondary" onclick="VidgetWidget.downloadResult()">
+                  Baixar imagem
+                </button>
+                <button class="vidget-btn vidget-btn-secondary" onclick="VidgetWidget.reset()">
+                  Tentar outra foto
+                </button>
+              </div>
             </div>
           </div>
           
@@ -753,6 +764,29 @@
       document.getElementById('vidget-error-state').style.display = 'none';
       document.getElementById('vidget-file-input').value = '';
       this.currentResult = null;
+    },
+    
+    // Adicionar ao carrinho
+    addToCart: function() {
+      console.log('🛒 Adicionando produto ao carrinho...');
+      
+      // Encontrar o botão "Adicionar ao Carrinho" da página
+      const addToCartBtn = document.querySelector('.btn-primary');
+      
+      if (addToCartBtn && addToCartBtn.textContent.includes('Carrinho')) {
+        // Simular clique no botão de adicionar ao carrinho da página
+        addToCartBtn.click();
+        
+        // Fechar o widget após adicionar
+        setTimeout(() => {
+          this.closeModal();
+        }, 500);
+        
+        console.log('✅ Produto adicionado ao carrinho!');
+      } else {
+        console.warn('⚠️ Botão de adicionar ao carrinho não encontrado na página');
+        alert('Produto pronto para compra! Feche esta janela e clique em "Adicionar ao Carrinho".');
+      }
     },
     
     // Download resultado
