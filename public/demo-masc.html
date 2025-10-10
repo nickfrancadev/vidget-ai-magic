@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camisa Social Slim Fit Branca - Vidget Fashion Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+      color: #1a1a1a;
+      background: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      border-bottom: 1px solid #e5e5e5;
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 100;
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      height: 32px;
+      width: auto;
+    }
+
+    .nav {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav a {
+      color: #1a1a1a;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav a:hover {
+      color: #445EDF;
+    }
+
+    .nav a.active {
+      color: #445EDF;
+    }
+
+    .nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #445EDF;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 20px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: #1a1a1a;
+      transition: color 0.2s;
+      padding: 8px;
+    }
+
+    .icon-btn:hover {
+      color: #445EDF;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px 16px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .breadcrumb a {
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover {
+      color: #000;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px 60px;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: 55% 45%;
+      gap: 80px;
+      align-items: start;
+    }
+
+    /* Product Images */
+    .product-images {
+      position: sticky;
+      top: 100px;
+    }
+
+    .main-image {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    }
+
+    .thumbnail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 12px;
+    }
+
+    .thumbnail {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .thumbnail:hover {
+      border-color: #445EDF;
+    }
+
+    .thumbnail.active {
+      border-color: #445EDF;
+    }
+
+    /* Product Info */
+    .product-info {
+      padding: 20px 0;
+    }
+
+    .product-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .product-description {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .product-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stars {
+      color: #f59e0b;
+    }
+
+    .reviews {
+      color: #666;
+    }
+
+    .sold {
+      color: #666;
+    }
+
+    .price-container {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .price-current {
+      font-size: 36px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .price-original {
+      font-size: 20px;
+      color: #999;
+      text-decoration: line-through;
+    }
+
+    .separator {
+      height: 1px;
+      background: #e5e5e5;
+      margin: 32px 0;
+    }
+
+    /* Selectors */
+    .selector-group {
+      margin-bottom: 28px;
+    }
+
+    .selector-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .color-options {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.1);
+    }
+
+    .color-swatch.selected {
+      border-color: #000;
+    }
+
+    .size-options {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .size-option {
+      min-width: 56px;
+      padding: 12px 16px;
+      border: 2px solid #e5e5e5;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      transition: all 0.2s;
+      border-radius: 6px;
+    }
+
+    .size-option:hover {
+      border-color: #999;
+    }
+
+    .size-option.selected {
+      border-color: #000;
+      background: #000;
+      color: white;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 18px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .btn-primary {
+      background: #445EDF;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #3347c4;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(68, 94, 223, 0.3);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #000;
+      border: 2px solid #e5e5e5;
+    }
+
+    .btn-secondary:hover {
+      border-color: #000;
+      background: #f9f9f9;
+    }
+
+    /* Additional Actions */
+    .additional-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .action-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .action-link:hover {
+      color: #000;
+    }
+
+    /* Product Details */
+    .product-details {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .details-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .details-text {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 20px 40px;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .product-images {
+        position: static;
+      }
+
+      .header-container {
+        padding: 0 20px;
+      }
+
+      .breadcrumb {
+        padding: 16px 20px 12px;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .product-title {
+        font-size: 24px;
+      }
+
+      .price-current {
+        font-size: 28px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <img src="/vidget-logo.svg" alt="Vidget" class="logo" />
+      <nav class="nav">
+        <a href="/">Início</a>
+        <a href="/loja" class="active">Loja</a>
+        <a href="/sobre">Sobre</a>
+        <a href="/contato">Contato</a>
+      </nav>
+      <div class="header-icons">
+        <button class="icon-btn" aria-label="Buscar">🔍</button>
+        <button class="icon-btn" aria-label="Favoritos">🤍</button>
+        <button class="icon-btn" aria-label="Carrinho">🛒</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="/">Início</a>
+    <span>/</span>
+    <a href="/loja">Loja</a>
+    <span>/</span>
+    <a href="/camisas">Camisas</a>
+    <span>/</span>
+    <span>Camisa Social Slim Fit Branca</span>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="product-grid">
+      <!-- Product Images -->
+      <div class="product-images">
+        <img 
+          src="https://images.unsplash.com/photo-1603252109360-909baaf261c7?w=800&h=1000&fit=crop" 
+          alt="Camisa Social Slim Fit Branca"
+          class="main-image"
+          id="mainImage"
+          data-product-image
+        />
+        <div class="thumbnail-grid">
+          <img 
+            src="https://images.unsplash.com/photo-1603252109360-909baaf261c7?w=200&h=200&fit=crop" 
+            alt="Camisa Social Slim Fit Branca - Vista 1"
+            class="thumbnail active"
+            onclick="changeImage('https://images.unsplash.com/photo-1603252109360-909baaf261c7?w=800&h=1000&fit=crop')"
+          />
+          <img 
+            src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=200&h=200&fit=crop" 
+            alt="Camisa Social Slim Fit Branca - Vista 2"
+            class="thumbnail"
+            onclick="changeImage('https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&h=1000&fit=crop')"
+          />
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <h1 class="product-title">Camisa Social Slim Fit Branca</h1>
+        
+        <p class="product-description">
+          Camisa social masculina de corte slim fit, confeccionada em tecido de algodão premium. 
+          Design clássico e atemporal, perfeito para ambientes corporativos e ocasiões formais.
+        </p>
+
+        <div class="product-meta">
+          <div class="rating">
+            <span class="stars">⭐ 4.8</span>
+            <span class="reviews">(342 avaliações)</span>
+          </div>
+          <span class="sold">• 8K+ Vendidos</span>
+        </div>
+
+        <div class="price-container">
+          <span class="price-current">R$ 189,00</span>
+          <span class="price-original">R$ 249,00</span>
+        </div>
+
+        <div class="separator"></div>
+
+        <!-- Color Selector -->
+        <div class="selector-group">
+          <label class="selector-label">Cor: Branco</label>
+          <div class="color-options">
+            <div 
+              class="color-swatch selected" 
+              style="background: #FFFFFF; border: 2px solid #e5e5e5;"
+              onclick="selectColor(this)"
+              title="Branco"
+            ></div>
+            <div 
+              class="color-swatch" 
+              style="background: #87CEEB;"
+              onclick="selectColor(this)"
+              title="Azul Claro"
+            ></div>
+            <div 
+              class="color-swatch" 
+              style="background: #000000;"
+              onclick="selectColor(this)"
+              title="Preto"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Size Selector -->
+        <div class="selector-group">
+          <label class="selector-label">Tamanho: M</label>
+          <div class="size-options">
+            <button class="size-option" onclick="selectSize(this)">P</button>
+            <button class="size-option selected" onclick="selectSize(this)">M</button>
+            <button class="size-option" onclick="selectSize(this)">G</button>
+            <button class="size-option" onclick="selectSize(this)">GG</button>
+            <button class="size-option" onclick="selectSize(this)">XGG</button>
+          </div>
+        </div>
+
+        <div class="separator"></div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="btn btn-primary">+ Adicionar ao Carrinho</button>
+          <button class="btn btn-secondary">Comprar Agora</button>
+        </div>
+
+        <!-- Additional Actions -->
+        <div class="additional-actions">
+          <a href="#" class="action-link">
+            <span>💬</span>
+            <span>Chat</span>
+          </a>
+          <a href="#" class="action-link">
+            <span>🤍</span>
+            <span>Favoritos</span>
+          </a>
+          <a href="#" class="action-link">
+            <span>↗</span>
+            <span>Compartilhar</span>
+          </a>
+        </div>
+
+        <!-- Product Details -->
+        <div class="product-details">
+          <h3 class="details-title">Detalhes do Produto</h3>
+          <div class="details-text">
+            Esta elegante camisa social apresenta um corte slim fit moderno que valoriza o corpo masculino 
+            sem comprometer o conforto. Confeccionada em algodão premium de alta qualidade com toque suave 
+            e excelente caimento. O design clássico com gola italiana e botões de madrepérola garantem 
+            sofisticação para o ambiente corporativo ou eventos formais.
+            <br><br>
+            <strong>Características:</strong>
+            <ul style="margin-top: 8px; padding-left: 20px;">
+              <li>Tecido 100% algodão premium</li>
+              <li>Corte slim fit moderno</li>
+              <li>Gola italiana clássica</li>
+              <li>Botões de madrepérola</li>
+              <li>Bolso no peito</li>
+              <li>Pode ser lavada à máquina</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Vidget Widget Script -->
+  <script src="/vidget-widget.js"></script>
+  <script>
+    // Initialize Vidget Widget
+    if (window.VidgetWidget) {
+      window.VidgetWidget.init({
+        autoDetectProduct: true,
+        position: 'bottom-right',
+        primaryColor: '#445EDF',
+        buttonText: 'Veja como fica em você',
+        buttonIcon: '✨',
+        onSuccess: (result) => {
+          console.log('✅ Imagem gerada com sucesso!', result);
+        },
+        onError: (error) => {
+          console.error('❌ Erro ao gerar imagem:', error);
+        }
+      });
+    }
+
+    // Image Gallery
+    function changeImage(src) {
+      document.getElementById('mainImage').src = src;
+      document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.classList.remove('active');
+        if (thumb.src.includes(src)) {
+          thumb.classList.add('active');
+        }
+      });
+    }
+
+    // Color Selection
+    function selectColor(element) {
+      document.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.classList.remove('selected');
+      });
+      element.classList.add('selected');
+    }
+
+    // Size Selection
+    function selectSize(element) {
+      document.querySelectorAll('.size-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      element.classList.add('selected');
+    }
+  </script>
+</body>
+</html>
