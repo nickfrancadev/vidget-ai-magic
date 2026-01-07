@@ -16,6 +16,7 @@ import sampleDressFemale from '@/assets/sample-product-dress-female.jpg';
 import sampleJeansFemale from '@/assets/sample-product-jeans-female.jpg';
 import sampleJeansMale from '@/assets/sample-product-jeans-male.jpg';
 import sampleNecklace from '@/assets/sample-product-necklace.jpg';
+import sampleCap from '@/assets/sample-product-cap.jpg';
 
 interface GeneratedContent {
   id: string;
@@ -89,6 +90,12 @@ const sampleProducts: Product[] = [
     id: '9',
     name: 'Colar',
     image: sampleNecklace,
+    category: 'Acessórios'
+  },
+  {
+    id: '10',
+    name: 'Boné Preto',
+    image: sampleCap,
     category: 'Acessórios'
   }
 ];
