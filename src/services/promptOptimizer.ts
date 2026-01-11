@@ -78,21 +78,32 @@ ROUPAS INFERIORES - POSICIONAMENTO OBRIGATÓRIO NAS PERNAS:
       keywords: ['boné', 'bone', 'chapéu', 'chapeu', 'gorro', 'touca', 'viseira', 'turbante', 'cap', 'hat'],
       anatomicRule: 'HEAD',
       positioningInstructions: `
-ACESSÓRIOS DE CABEÇA - EDIÇÃO FOTOREALISTA (NÃO MOCKUP 3D):
+ACESSÓRIOS DE CABEÇA - ENCAIXE PERFEITO (NÃO MOCKUP 3D):
 - OBJETIVO: Editar a foto para que pareça uma FOTO REAL da pessoa usando o boné/chapéu
 - O resultado deve parecer uma FOTOGRAFIA GENUÍNA, não um render 3D ou mockup digital
-- O produto DEVE estar NA CABEÇA da pessoa, conformando-se ao formato da cabeça
-- SOMBRAS OBRIGATÓRIAS:
-  * Adicionar sombra da aba do boné no rosto/testa
-  * Sombras devem seguir a direção de luz da foto original
-  * Oclusão ambiente onde o boné encontra o cabelo/cabeça
-- INTEGRAÇÃO REALISTA:
-  * Ajustado na cabeça de forma natural, com peso realista
-  * Textura de tecido natural, não aparência plástica/sintética
-  * Cabelo visível nas bordas, naturalmente sob/ao redor do boné
-  * Iluminação e temperatura de cor devem corresponder à foto original
-- NUNCA criar aparência de mockup 3D, CGI ou render digital
-- NUNCA mostrar o acessório flutuando ou sem sombras adequadas
+
+CRÍTICO - ÂNGULO E ENCAIXE:
+- O boné DEVE seguir EXATAMENTE o ângulo/inclinação 3D da cabeça da pessoa
+- Se a cabeça está inclinada para a esquerda, o boné inclina para a esquerda
+- Se a cabeça está virada para o lado, o boné segue essa rotação
+- O boné deve estar ENCAIXADO/JUSTO na cabeça, não solto ou flutuando por cima
+- A aba frontal deve alinhar com a direção do rosto
+
+CONFORMAÇÃO À CABEÇA:
+- O boné deve ENVOLVER o contorno do crânio, não sentar plano acima dele
+- Ajuste à curvatura 3D da cabeça
+- Cabelo visível nas bordas, naturalmente sob/ao redor do boné
+
+SOMBRAS OBRIGATÓRIAS:
+- Sombra da aba do boné no rosto/testa (seguindo direção de luz)
+- Oclusão ambiente onde o boné encontra o cabelo/cabeça
+- Iluminação e temperatura de cor devem corresponder à foto original
+
+PROIBIDO:
+- Boné sentado plano/horizontal quando cabeça está inclinada
+- Boné flutuando acima da cabeça sem contato
+- Ângulo do boné não correspondendo ao ângulo da cabeça
+- Aparência de mockup 3D, CGI ou render digital
       `
     },
     'bolsas': {
