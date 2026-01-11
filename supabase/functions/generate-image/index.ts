@@ -24,9 +24,26 @@ serve(async (req) => {
     console.log('Has user photo:', !!userPhoto);
     console.log('Category:', category);
 
-    // Preparar prompt baseado na situação
+    // Preparar prompt baseado na situação - enfatizar FOTOREALISMO, não mockup 3D
     const textPrompt = userPhoto && productImage
-      ? `${prompt || 'Replace the clothing item on the person with the product shown in the reference image. Maintain photorealistic quality, natural appearance, exact pose, facial features, background, and body position.'}`
+      ? `PHOTOREALISTIC VIRTUAL TRY-ON - PHOTO EDITING TASK:
+
+CRITICAL: This must look like a REAL PHOTOGRAPH, NOT a 3D render, CGI, or digital mockup!
+
+Edit this person's photograph to show them actually wearing/using the product from the reference image.
+
+REQUIREMENTS FOR PHOTOREALISM:
+- The result must be indistinguishable from a genuine photograph
+- Match the exact lighting direction and color temperature of the original photo
+- Add realistic shadows where the product meets the person (e.g., cap shadow on forehead)
+- Product should have natural fabric/material texture with subtle imperfections
+- Integrate naturally with the person's hair, skin, and existing clothing
+- Preserve the person's exact pose, expression, and features
+- The product should appear to have weight and rest naturally on the body
+
+AVOID: 3D mockup look, CGI appearance, synthetic/plastic textures, floating products, missing shadows, sterile/perfect appearance
+
+${prompt || 'Apply the product naturally to the person while maintaining photorealistic quality.'}`
       : prompt || 'Generate a professional product image';
 
     console.log('📝 Prompt de texto:', textPrompt);

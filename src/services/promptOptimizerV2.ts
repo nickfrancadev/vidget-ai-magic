@@ -185,47 +185,68 @@ REMEMBER: Lower clothing is WORN on LEGS, not held in HANDS!`;
       negativePrompt = 'pants in hands, holding clothing, displaying pants, clothing floating, garment hovering, person showing clothes, pants not being worn, garment separate from body';
 
     } else if (category === 'acessorios_cabeca') {
-      optimizedPrompt = `⚠️ CRITICAL INSTRUCTIONS - HEAD ACCESSORY POSITIONING
+      optimizedPrompt = `⚠️ CRITICAL INSTRUCTIONS - PHOTOREALISTIC HEAD ACCESSORY VIRTUAL TRY-ON
+
+THIS IS A PHOTO EDITING TASK - NOT A 3D MOCKUP OR RENDERING!
+
+OBJECTIVE: Edit the person's photo to show them ACTUALLY WEARING the cap/hat from the product image.
+
+PHOTOREALISM REQUIREMENTS:
+- This must look like a REAL PHOTOGRAPH, not a 3D render or digital mockup
+- The result should be indistinguishable from a photo of someone actually wearing the cap
+- Match the lighting, shadows, and color temperature of the original person's photo
+- The cap should have natural fabric texture, creases, and imperfections
+- Add realistic shadows under the cap brim onto the forehead/face
+- The cap should conform to the shape of the person's head naturally
 
 ANATOMICAL POSITION: HEAD (on top of the head)
 
 MANDATORY STEPS:
 
-STEP 1: IDENTIFY THE HEAD
-- Locate the head of the person
-- Head is the top part of the body
+STEP 1: ANALYZE THE PERSON'S PHOTO
+- Study the lighting direction on the person's face
+- Note the head angle and position
+- Identify where natural shadows fall
 
-STEP 2: REMOVE ORIGINAL ACCESSORY (if any)
-- Delete/erase any current head accessory
-- Keep the head visible
+STEP 2: PLACE CAP ON HEAD REALISTICALLY
+- Position the cap ON TOP of the HEAD
+- The cap must SIT on the head, not float above it
+- Front of cap should rest slightly above the forehead/hairline
+- Cap should appear to have weight and rest naturally on the head
+- Adjust cap angle to match the person's head tilt
 
-STEP 3: PLACE NEW ACCESSORY ON HEAD
-- Take the product accessory from the reference image
-- Place it ON TOP of the HEAD
-- Must fit naturally on the head
-- Proper positioning (not too high, not too low)
+STEP 3: INTEGRATE LIGHTING & SHADOWS
+- Add shadow from cap brim onto forehead and face (if brim faces forward)
+- Match the cap's lighting to the photo's lighting direction
+- The cap should have the same color temperature as the rest of the photo
+- Add subtle ambient occlusion where cap meets hair/head
 
-STEP 4: VERIFY POSITIONING
-✅ Is the accessory ON the head? (NOT in hands, NOT floating)
-✅ Is the person WEARING the accessory?
-✅ Does it look naturally worn?
+STEP 4: HAIR INTEGRATION
+- Some hair may be visible around the cap edges
+- Hair should look naturally tucked under or around the cap
+- Maintain realistic interaction between cap and hair
 
-❌ FORBIDDEN POSITIONS - NEVER DO THIS:
-- Accessory in person's hands - WRONG!
-- Accessory floating or hovering - WRONG!
-- Person holding/displaying the accessory - WRONG!
-- Accessory separate from head - WRONG!
+QUALITY CHECKLIST:
+✅ Does this look like a real photo? (NOT a 3D render)
+✅ Are shadows realistic and matching the photo's lighting?
+✅ Does the cap conform to the head shape naturally?
+✅ Is there proper integration with the person's hair?
+✅ Does the cap have natural fabric texture, not synthetic/plastic look?
 
-✅ REQUIRED POSITION - ONLY THIS:
-- Accessory ON head, being WORN
-- Natural wearing position
-- Proper fit and placement
+❌ FORBIDDEN - AVOID THESE:
+- 3D mockup appearance - WRONG!
+- CGI/rendered look - WRONG!
+- Cap floating above head - WRONG!
+- Missing shadows from cap brim - WRONG!
+- Unnatural plastic/synthetic material look - WRONG!
+- Cap in person's hands - WRONG!
+- Perfect/sterile appearance without natural imperfections - WRONG!
 
 USER REQUEST: ${userPrompt}
 
-REMEMBER: Head accessories are WORN on HEAD, not held in HANDS!`;
+FINAL OUTPUT: A photorealistic image that looks like a genuine photograph of this person wearing this exact cap.`;
 
-      negativePrompt = 'hat in hands, holding cap, displaying headwear, hat floating, accessory hovering, person showing hat, hat not being worn, accessory separate from head';
+      negativePrompt = '3D render, 3D mockup, CGI, digital art, synthetic look, plastic texture, floating hat, hat in hands, holding cap, no shadows, flat lighting, unnatural appearance, computer generated, artificial look, perfect sterile appearance';
 
     } else if (category === 'bolsas') {
       optimizedPrompt = `⚠️ CRITICAL INSTRUCTIONS - BAG POSITIONING
