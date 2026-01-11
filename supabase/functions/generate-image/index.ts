@@ -38,14 +38,23 @@ NON-NEGOTIABLE IDENTITY PRESERVATION:
 - Keep the exact pose, expression, hair, skin tone, tattoos, and background
 - Keep the SAME orientation as the uploaded photo (DO NOT rotate 90°, do NOT change aspect ratio)
 
+CRITICAL FOR HEADWEAR (caps, hats, beanies):
+- The cap/hat MUST follow the EXACT 3D angle and tilt of the person's head
+- If head is tilted, the cap tilts the same way
+- If head is turned to the side, the cap follows that rotation
+- The cap must be FITTED/SNUG on the head, NOT floating or loosely placed on top
+- The cap should WRAP around the skull contour, conforming to the head's 3D shape
+- The brim direction must align with the face direction
+- Add shadow from cap brim onto forehead/face
+
 REQUIREMENTS FOR PHOTOREALISM:
 - Match the exact lighting direction and color temperature of the original photo
-- Add realistic shadows where the product meets the person (e.g., cap shadow on forehead)
+- Add realistic shadows where the product meets the person
 - Integrate naturally with the person's hair/skin and existing clothing
 - Preserve the person's exact features and proportions
 - The product should appear to have weight and rest naturally on the body
 
-AVOID: 3D mockup look, CGI appearance, synthetic/plastic textures, floating products, missing shadows, sterile/perfect appearance
+AVOID: 3D mockup look, CGI appearance, synthetic/plastic textures, floating products, missing shadows, cap not following head angle
 
 ${prompt || 'Apply the product naturally to the person while maintaining strict identity preservation and photorealistic quality.'}`
       : prompt || 'Generate a professional product image';

@@ -191,62 +191,56 @@ THIS IS A PHOTO EDITING TASK - NOT A 3D MOCKUP OR RENDERING!
 
 OBJECTIVE: Edit the person's photo to show them ACTUALLY WEARING the cap/hat from the product image.
 
+CRITICAL FIT & ANGLE REQUIREMENTS:
+1. The cap MUST follow the EXACT 3D angle and tilt of the person's head:
+   - If the head is tilted left, the cap tilts left
+   - If the head is tilted down, the cap angles down
+   - If the head is turned to the side, the cap follows that rotation
+2. The cap MUST be FITTED/SNUG on the head, NOT floating or loosely placed on top
+3. The cap should appear to WRAP around the skull contour, not sit flat above it
+4. The front of the cap brim should align with the forehead direction
+5. The back of the cap should conform to the back of the head
+
+PERSPECTIVE MATCHING:
+- Match the exact camera perspective of the original photo
+- If the photo is taken from below, the cap's underside should be slightly visible
+- If the photo is from above, you see more of the cap's top
+- Perspective distortion on the cap should match the photo's lens characteristics
+
 PHOTOREALISM REQUIREMENTS:
 - This must look like a REAL PHOTOGRAPH, not a 3D render or digital mockup
 - The result should be indistinguishable from a photo of someone actually wearing the cap
 - Match the lighting, shadows, and color temperature of the original person's photo
 - The cap should have natural fabric texture, creases, and imperfections
 - Add realistic shadows under the cap brim onto the forehead/face
-- The cap should conform to the shape of the person's head naturally
+- Hair should naturally interact with the cap (tucked under, peeking out at edges)
 
-ANATOMICAL POSITION: HEAD (on top of the head)
-
-MANDATORY STEPS:
-
-STEP 1: ANALYZE THE PERSON'S PHOTO
-- Study the lighting direction on the person's face
-- Note the head angle and position
-- Identify where natural shadows fall
-
-STEP 2: PLACE CAP ON HEAD REALISTICALLY
-- Position the cap ON TOP of the HEAD
-- The cap must SIT on the head, not float above it
-- Front of cap should rest slightly above the forehead/hairline
-- Cap should appear to have weight and rest naturally on the head
-- Adjust cap angle to match the person's head tilt
-
-STEP 3: INTEGRATE LIGHTING & SHADOWS
-- Add shadow from cap brim onto forehead and face (if brim faces forward)
-- Match the cap's lighting to the photo's lighting direction
-- The cap should have the same color temperature as the rest of the photo
-- Add subtle ambient occlusion where cap meets hair/head
-
-STEP 4: HAIR INTEGRATION
-- Some hair may be visible around the cap edges
-- Hair should look naturally tucked under or around the cap
-- Maintain realistic interaction between cap and hair
+SHADOW & LIGHTING:
+- Shadow from cap brim onto forehead and face (following light direction)
+- Ambient occlusion where cap meets hair/head
+- Same color temperature as the rest of the photo
 
 QUALITY CHECKLIST:
-✅ Does this look like a real photo? (NOT a 3D render)
+✅ Does the cap follow the head's tilt/rotation exactly?
+✅ Is the cap fitted snugly, not floating above the head?
+✅ Does the brim direction match the face direction?
 ✅ Are shadows realistic and matching the photo's lighting?
-✅ Does the cap conform to the head shape naturally?
-✅ Is there proper integration with the person's hair?
 ✅ Does the cap have natural fabric texture, not synthetic/plastic look?
 
 ❌ FORBIDDEN - AVOID THESE:
+- Cap sitting flat/horizontal when head is tilted - WRONG!
+- Cap floating above the head without contact - WRONG!
+- Cap angle not matching head angle - WRONG!
 - 3D mockup appearance - WRONG!
 - CGI/rendered look - WRONG!
-- Cap floating above head - WRONG!
 - Missing shadows from cap brim - WRONG!
-- Unnatural plastic/synthetic material look - WRONG!
 - Cap in person's hands - WRONG!
-- Perfect/sterile appearance without natural imperfections - WRONG!
 
 USER REQUEST: ${userPrompt}
 
-FINAL OUTPUT: A photorealistic image that looks like a genuine photograph of this person wearing this exact cap.`;
+FINAL OUTPUT: A photorealistic image where the cap is FITTED to the head, following the exact angle/tilt of the head, as if the person is genuinely wearing it.`;
 
-      negativePrompt = '3D render, 3D mockup, CGI, digital art, synthetic look, plastic texture, floating hat, hat in hands, holding cap, no shadows, flat lighting, unnatural appearance, computer generated, artificial look, perfect sterile appearance';
+      negativePrompt = '3D render, 3D mockup, CGI, digital art, synthetic look, plastic texture, floating hat, cap not following head angle, hat sitting flat, loose cap, cap in hands, holding cap, no shadows, flat lighting, unnatural appearance, computer generated, artificial look, cap not fitted';
 
     } else if (category === 'bolsas') {
       optimizedPrompt = `⚠️ CRITICAL INSTRUCTIONS - BAG POSITIONING
