@@ -244,12 +244,14 @@ ${categoryInstructions}
    - Maintain physical plausibility (gravity, physics, proportions, anatomy)
    - Product should show appropriate wear/stress (fabric tension, creases where natural)
 
-7. PERSON/BODY INTEGRATION:
-   - Keep the person's pose, expression, and characteristics
-   - ONLY replace/modify the specific area where the product goes
-   - Maintain skin tone, body proportions, and other features
-   - Show natural interaction (hands touching product if being carried, feet inside shoes, etc.)
-   - Body position should make sense for using/wearing the product
+ 7. PERSON/BODY INTEGRATION (ABSOLUTELY CRITICAL):
+    - Keep the person's identity EXACTLY the same
+    - DO NOT change facial features (eyes, nose, mouth, jawline), body shape, weight, age, skin texture, hairline, tattoos, or any physical characteristics
+    - DO NOT beautify/retouch the person (no skin smoothing, no "make prettier", no reshaping)
+    - DO NOT warp/stretch/distort the original photo geometry
+    - ONLY replace/modify the specific area where the product goes
+    - Maintain the same camera perspective and image orientation (do NOT rotate the photo)
+    - Body position should make sense for using/wearing the product
 
 8. TECHNICAL SPECIFICATIONS:
    - Color space: sRGB

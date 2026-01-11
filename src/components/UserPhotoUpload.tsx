@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { Upload, User, X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { normalizeUserUploadImage } from '@/lib/normalizeUserUploadImage';
 
 interface UserPhotoUploadProps {
   userPhoto: File | null;
@@ -12,17 +13,21 @@ export const UserPhotoUpload = ({ userPhoto, onPhotoSelect }: UserPhotoUploadPro
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
-      onPhotoSelect(file);
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Normaliza orientação (corrige EXIF que causa resultados girados 90°)
+        const normalized = await normalizeUserUploadImage(file);
+        onPhotoSelect(normalized.file);
+        setPreview(normalized.dataUrl);
+      } catch {
+        // Fallback: usa arquivo original
+        onPhotoSelect(file);
+        const reader = new FileReader();
+        reader.onloadend = () => setPreview(reader.result as string);
+        reader.readAsDataURL(file);
+      }
     }
   };
 
