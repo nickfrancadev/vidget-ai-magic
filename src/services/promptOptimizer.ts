@@ -78,15 +78,21 @@ ROUPAS INFERIORES - POSICIONAMENTO OBRIGATÓRIO NAS PERNAS:
       keywords: ['boné', 'bone', 'chapéu', 'chapeu', 'gorro', 'touca', 'viseira', 'turbante', 'cap', 'hat'],
       anatomicRule: 'HEAD',
       positioningInstructions: `
-ACESSÓRIOS DE CABEÇA - POSICIONAMENTO OBRIGATÓRIO NA CABEÇA:
-- O produto DEVE estar NA CABEÇA da pessoa
-- Posicionamento:
-  * Ajustado na cabeça de forma natural
-  * Aba (se houver) para frente ou conforme o estilo
-  * Tamanho proporcional à cabeça
-  * Levemente afetado pela gravidade e cabelo
-- NUNCA mostre o acessório flutuando ou ao lado da pessoa
-- A pessoa deve parecer estar usando o produto naturalmente
+ACESSÓRIOS DE CABEÇA - EDIÇÃO FOTOREALISTA (NÃO MOCKUP 3D):
+- OBJETIVO: Editar a foto para que pareça uma FOTO REAL da pessoa usando o boné/chapéu
+- O resultado deve parecer uma FOTOGRAFIA GENUÍNA, não um render 3D ou mockup digital
+- O produto DEVE estar NA CABEÇA da pessoa, conformando-se ao formato da cabeça
+- SOMBRAS OBRIGATÓRIAS:
+  * Adicionar sombra da aba do boné no rosto/testa
+  * Sombras devem seguir a direção de luz da foto original
+  * Oclusão ambiente onde o boné encontra o cabelo/cabeça
+- INTEGRAÇÃO REALISTA:
+  * Ajustado na cabeça de forma natural, com peso realista
+  * Textura de tecido natural, não aparência plástica/sintética
+  * Cabelo visível nas bordas, naturalmente sob/ao redor do boné
+  * Iluminação e temperatura de cor devem corresponder à foto original
+- NUNCA criar aparência de mockup 3D, CGI ou render digital
+- NUNCA mostrar o acessório flutuando ou sem sombras adequadas
       `
     },
     'bolsas': {
@@ -404,7 +410,15 @@ Remember: The reference product is SACRED and must be correctly positioned on th
       'acessorios_cabeca': [
         'hat floating',
         'hat not on head',
-        'headwear in hand'
+        'headwear in hand',
+        '3D render',
+        '3D mockup',
+        'CGI',
+        'digital art',
+        'synthetic look',
+        'plastic texture',
+        'no shadows',
+        'flat lighting'
       ],
       'bolsas': [
         'bag on ground',
