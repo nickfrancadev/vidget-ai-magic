@@ -275,10 +275,11 @@ Remember: The reference product is SACRED throughout the entire video. Animate t
       let detectedCategory = 'unknown';
       
       // Simplificar o prompt para edição de imagem quando há foto do usuário
-      const editPrompt = prompt ? 
-        `Replace the clothing item on the person with the product shown in the reference image. ${prompt}` :
-        `Replace the corresponding clothing item on the person with the product shown in the reference image. Maintain photorealistic quality and natural appearance.`;
-      
+      // CRÍTICO: NUNCA distorcer/alterar características físicas da pessoa; apenas aplicar o produto.
+      const editPrompt = prompt
+        ? `PHOTO EDIT / VIRTUAL TRY-ON (STRICT):\n\n- DO NOT change the person in ANY way: no face reshaping, no eye/nose/mouth/jaw changes, no body reshaping, no beautification, no skin smoothing, no age change, no identity change.\n- DO NOT warp/stretch/distort the original photo.\n- Preserve the exact pose, expression, hair, skin tone, tattoos, background, and camera perspective.\n- Maintain the SAME image orientation as the uploaded photo (DO NOT rotate 90°, DO NOT change aspect ratio).\n\nTask: apply ONLY the product from the reference image onto the person (replace only the relevant area). Add realistic shadows, occlusion, and lighting so it looks like a real photograph.\n\nUSER REQUEST: ${prompt}`
+        : `PHOTO EDIT / VIRTUAL TRY-ON (STRICT): apply ONLY the product from the reference image onto the person. Do NOT change face/body/identity, do NOT warp the photo, and do NOT rotate the image. Match lighting and add realistic shadows/occlusion.`;
+
       // Tentar detectar categoria do produto
       if (userPhoto && import.meta.env.VITE_GEMINI_API_KEY) {
         try {

@@ -24,7 +24,7 @@ serve(async (req) => {
     console.log('Has user photo:', !!userPhoto);
     console.log('Category:', category);
 
-    // Preparar prompt baseado na situação - enfatizar FOTOREALISMO, não mockup 3D
+    // Preparar prompt baseado na situação - enfatizar FOTOREALISMO + PRESERVAÇÃO TOTAL DA PESSOA (sem distorção)
     const textPrompt = userPhoto && productImage
       ? `PHOTOREALISTIC VIRTUAL TRY-ON - PHOTO EDITING TASK:
 
@@ -32,18 +32,22 @@ CRITICAL: This must look like a REAL PHOTOGRAPH, NOT a 3D render, CGI, or digita
 
 Edit this person's photograph to show them actually wearing/using the product from the reference image.
 
+NON-NEGOTIABLE IDENTITY PRESERVATION:
+- DO NOT change the person in ANY way: no face reshaping, no eye/nose/mouth/jaw changes, no body reshaping, no beautification
+- DO NOT warp/stretch/distort the original photo geometry
+- Keep the exact pose, expression, hair, skin tone, tattoos, and background
+- Keep the SAME orientation as the uploaded photo (DO NOT rotate 90°, do NOT change aspect ratio)
+
 REQUIREMENTS FOR PHOTOREALISM:
-- The result must be indistinguishable from a genuine photograph
 - Match the exact lighting direction and color temperature of the original photo
 - Add realistic shadows where the product meets the person (e.g., cap shadow on forehead)
-- Product should have natural fabric/material texture with subtle imperfections
-- Integrate naturally with the person's hair, skin, and existing clothing
-- Preserve the person's exact pose, expression, and features
+- Integrate naturally with the person's hair/skin and existing clothing
+- Preserve the person's exact features and proportions
 - The product should appear to have weight and rest naturally on the body
 
 AVOID: 3D mockup look, CGI appearance, synthetic/plastic textures, floating products, missing shadows, sterile/perfect appearance
 
-${prompt || 'Apply the product naturally to the person while maintaining photorealistic quality.'}`
+${prompt || 'Apply the product naturally to the person while maintaining strict identity preservation and photorealistic quality.'}`
       : prompt || 'Generate a professional product image';
 
     console.log('📝 Prompt de texto:', textPrompt);
@@ -97,7 +101,7 @@ ${prompt || 'Apply the product naturally to the person while maintaining photore
           }
         ],
         modalities: ['image', 'text'],
-        temperature: 0.7,
+        temperature: 0.4,
       }),
     });
 
